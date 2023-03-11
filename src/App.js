@@ -24,6 +24,8 @@ const ResetPassword = React.lazy(() => import("./pages/commun/auth/ResetPassword
 const TemplateBack = React.lazy(() => import("./components/back/TemplateBack"));
 
 function App() {
+  const [showCustomerBoard, setShowCustomerBoard] = useState(false);
+  const [showAdminBoard, setShowAdminBoard] = useState(false);
   const { user: currentUser } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
@@ -55,6 +57,23 @@ function App() {
     }
   }, [currentUser]);
 
+  useEffect(() => {
+    if (["/login", "/register"].includes(location.pathname)) {
+      dispatch(clearMessage()); // clear message when changing location
+    }
+  }, [dispatch, location]);
+  const logOut = useCallback(() => {
+    dispatch(logout());
+  }, [dispatch]);
+  useEffect(() => {
+    if (currentUser) {
+      setShowCustomerBoard(currentUser.roles.includes("ROLE_USER"));
+      setShowAdminBoard(currentUser.roles.includes("ROLE_ADMIN"));
+    } else {
+      setShowCustomerBoard(false);
+      setShowAdminBoard(false);
+    }
+  }, [currentUser]);
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <Routes>

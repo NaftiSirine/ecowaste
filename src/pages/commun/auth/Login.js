@@ -37,7 +37,6 @@ function Login() {
 
     setUsername(e.target.value);
   };
-
   const Login = async (e) => {
     e.preventDefault();
     console.log(username + password + twoFactorCode);
@@ -90,9 +89,9 @@ function Login() {
 
 
 
-  {/*if (isLoggedIn) {
+  if (isLoggedIn) {
     return <Navigate to="/home" />;
-  } */}
+  }
   return (
     <div>
       <div className="border-bottom shadow-sm">
@@ -176,7 +175,7 @@ function Login() {
                       </div>
                     </div>
                     <div className="d-flex justify-content-between">
-                      {/*
+                      {/*  
                         <div className="form-check">
                           <input className="form-check-input" type="checkbox" defaultValue id="flexCheckDefault" />
                          <label className="form-check-label" htmlFor="flexCheckDefault">

@@ -72,8 +72,8 @@ export const login = (username, password) => (dispatch) => {
           type: LOGIN_SUCCESS,
           payload: { user: data },
         });
-
-        return Promise.resolve();
+  
+        return Promise.resolve(data);
       },
       (error) => {
         const message =
@@ -165,7 +165,7 @@ export const signupGoogle = (accessToken) => (dispatch) => {
         dispatch({
           type: GOOGLE_LOGIN_FAIL,
         });
-  
+
         dispatch({
           type: SET_MESSAGE,
           payload: message,
