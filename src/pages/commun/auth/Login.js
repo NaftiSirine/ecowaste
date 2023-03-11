@@ -49,7 +49,7 @@ function Login() {
         } else {
           navigate("/dashboard/users");
         }
-       
+
 
         //  window.location.reload();
       })
@@ -61,10 +61,10 @@ function Login() {
       });
   };
 
-  
 
-  
-  
+
+
+
   function handleGoogleLoginSuccess(tokenResponse) {
     const accessToken = tokenResponse.access_token;
 
@@ -85,7 +85,7 @@ function Login() {
       setError(error);
     });
   }
-  
+
   const loginG = useGoogleLogin({onSuccess: handleGoogleLoginSuccess});
 
 
@@ -176,7 +176,7 @@ function Login() {
                       </div>
                     </div>
                     <div className="d-flex justify-content-between">
-                      {/*  
+                      {/*
                         <div className="form-check">
                           <input className="form-check-input" type="checkbox" defaultValue id="flexCheckDefault" />
                          <label className="form-check-label" htmlFor="flexCheckDefault">
