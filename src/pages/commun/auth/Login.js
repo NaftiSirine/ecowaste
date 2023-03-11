@@ -30,6 +30,7 @@ function Login() {
     e.preventDefault();
     console.log(username + password);
     dispatch(login(username, password))
+
       .then((data) => {
         console.log(data.roles[0])
         if(data.roles[0]==="ROLE_USER"){
@@ -39,6 +40,7 @@ function Login() {
           navigate("/dashboard/users");
         }
        
+
         //  window.location.reload();
       })
       .catch((error) => {

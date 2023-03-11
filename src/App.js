@@ -1,6 +1,8 @@
 import "./App.css";
 import { Route, Routes, useLocation } from "react-router-dom";
+
 import React, { Suspense, useCallback, useEffect, useState } from "react";
+
 import Layout from "./components/layout";
 import LayoutBack from "./components/layout/LayoutBack";
 
@@ -21,12 +23,15 @@ const Register = React.lazy(() => import("./pages/commun/auth/Register"));
 const TemplateBack = React.lazy(() => import("./components/back/TemplateBack"));
 
 function App() {
+
   const [showCustomerBoard, setShowCustomerBoard] = useState(false);
   const [showAdminBoard, setShowAdminBoard] = useState(false);
+
   const { user: currentUser } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
   let location = useLocation();
+
   useEffect(() => {
     if (["/login", "/register"].includes(location.pathname)) {
       dispatch(clearMessage()); // clear message when changing location
@@ -44,6 +49,7 @@ function App() {
       setShowAdminBoard(false);
     }
   }, [currentUser]);
+
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <Routes>
