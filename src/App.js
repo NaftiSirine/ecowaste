@@ -21,13 +21,13 @@ axios.defaults.baseURL = "http://localhost:5000";
 const Register = React.lazy(() => import("./pages/commun/auth/Register"));
 const ForgetPassword = React.lazy(() => import("./pages/commun/auth/ForgetPassword"));
 const ResetPassword = React.lazy(() => import("./pages/commun/auth/ResetPassword"));
-
-
-
 const TemplateBack = React.lazy(() => import("./components/back/TemplateBack"));
 
-
 function App() {
+  const { user: currentUser } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+
+  let location = useLocation();
 
   const [showCustomerBoard, setShowCustomerBoard] = useState(false);
   const [showAdminBoard, setShowAdminBoard] = useState(false);
@@ -110,9 +110,9 @@ function App() {
           exact
           path='/'
           element={
-         
+
               <Login />
-    
+
           }
         />
         <Route
