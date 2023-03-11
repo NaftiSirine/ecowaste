@@ -41,7 +41,7 @@ import axios from "axios";
           payload: { user: data },
         });
   
-        return Promise.resolve();
+        return Promise.resolve(data);
       },
       (error) => {
         const message =
