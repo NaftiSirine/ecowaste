@@ -5,8 +5,7 @@ import { toast, ToastContainer } from "react-toastify";
 import { notify } from "../../../utils/HelperFunction";
 import "react-toastify/dist/ReactToastify.css";
 import { useSelector } from "react-redux";
-import { Navigate } from "react-router-dom";
-
+import { Navigate } from 'react-router-dom';
 const Settings = (props) => {
   const [submited, setSubmited] = useState(false);
   const [newPassword, setNewPassword] = useState({
@@ -30,9 +29,9 @@ const Settings = (props) => {
   };
   const { user: currentUser } = useSelector((state) => state.auth);
 
-  // if (!currentUser) {
-  //   return <Navigate to="/" />;
-  // }
+  if (!currentUser) {
+    return <Navigate to="/" />;
+  }
   const resetPassword = () => {
     setSubmited(true);
     if (newPassword.valid) {
