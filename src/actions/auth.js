@@ -9,19 +9,23 @@ import {
   
 import axios from "axios";
 
-const loginFunction = (username, password, twoFactor) => {
-  return axios
-    .post(`/api/auth/signin`, {
-      username,
-      password,
-      twoFactorSecret: twoFactor,
-    })
-    .then((response) => {
-      if (response.data.accessToken) {
-        localStorage.setItem("user", JSON.stringify(response.data));
-      }
-      });
-  };
+const loginFunction= (username, password) => {
+  return axios.post(`/api/auth/signin`, {
+    username,
+    password,
+  })
+  .then((response) => {
+    if (response.data.accessToken) {
+      localStorage.setItem("user", JSON.stringify(response.data));
+    }
+
+    return response.data;
+  });
+};
+
+const logoutFunction = () => {
+  localStorage.removeItem("user");
+};
 
 
 const googleLoginFunction= (accessToken) => {
@@ -59,40 +63,47 @@ const logoutFunction = () => {
   localStorage.removeItem("user");
 };
 
-export const login = (username, password, twoFactor) => (dispatch) => {
-  return loginFunction(username, password, twoFactor).then(
-    (data) => {
-      console.log("Login success!", data);
+export const login = (username, password) => (dispatch) => {
+  return loginFunction(username, password).then(
+      (data) => {
+        console.log('Login success!', data);
 
-      dispatch({
-        type: LOGIN_SUCCESS,
-        payload: { user: data },
-      });
+        dispatch({
+          type: LOGIN_SUCCESS,
+          payload: { user: data },
+        });
 
-      return Promise.resolve(data);
-    },
-    (error) => {
-      const message =
-        (error.response &&
-          error.response.data &&
-          error.response.data.message) ||
-        error.message ||
-        error.toString();
+        return Promise.resolve();
+      },
+      (error) => {
+        const message =
+            (error.response &&
+                error.response.data &&
+                error.response.data.message) ||
+            error.message ||
+            error.toString();
 
-      dispatch({
-        type: LOGIN_FAIL,
-      });
+        dispatch({
+          type: LOGIN_FAIL,
+        });
 
-      dispatch({
-        type: SET_MESSAGE,
-        payload: message,
-      });
+        dispatch({
+          type: SET_MESSAGE,
+          payload: message,
+        });
 
-      return Promise.reject(message);
-    }
+        return Promise.reject(message);
+      }
   );
 };
 
+export const logout = () => (dispatch) => {
+  logoutFunction();
+
+  dispatch({
+    type: LOGOUT,
+  });
+};
 
 export const loginGoogle = (accessToken) => (dispatch) => {
   return googleLoginFunction(accessToken).then(
@@ -113,17 +124,17 @@ export const loginGoogle = (accessToken) => (dispatch) => {
           error.response.data.message) ||
         error.message ||
         error.toString();
-  
+
         dispatch({
           type: GOOGLE_LOGIN_FAIL,
         });
-  
+
         dispatch({
           type: SET_MESSAGE,
           payload: message,
         });
         console.log(error)
-  
+
         return Promise.reject(message);
     }
   );
@@ -150,7 +161,7 @@ export const signupGoogle = (accessToken) => (dispatch) => {
           error.response.data.message) ||
         error.message ||
         error.toString();
-  
+
         dispatch({
           type: GOOGLE_LOGIN_FAIL,
         });
@@ -160,20 +171,14 @@ export const signupGoogle = (accessToken) => (dispatch) => {
           payload: message,
         });
         console.log(error)
-  
+
         return Promise.reject(message);
     }
   );
 };
 
 
-export const logout = () => (dispatch) => {
-  logoutFunction();
 
-  dispatch({
-    type: LOGOUT,
-  });
-};
 export default {
     login,
     logout,
