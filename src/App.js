@@ -67,12 +67,13 @@ function App() {
   }, [dispatch]);
   useEffect(() => {
     if (currentUser) {
+console.log(currentUser)
       setShowCustomerBoard(currentUser.roles.includes("ROLE_USER"));
       setShowAdminBoard(currentUser.roles.includes("ROLE_ADMIN"));
     } else {
       setShowCustomerBoard(false);
       setShowAdminBoard(false);
-    }
+   }
   }, [currentUser]);
   return (
     <Suspense fallback={<div>Loading...</div>}>
