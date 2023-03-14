@@ -15,6 +15,8 @@ const Settings = (props) => {
   const [error, setError] = useState(null);
   const [disabled, setDisabled] = useState(true);
 
+  const [invalidPassword, setInvalidPassword] = useState(false);
+
   const [newPassword, setNewPassword] = useState({
     value: "",
     valid: false,
@@ -127,9 +129,8 @@ const Settings = (props) => {
   const resetPassword = () => {
     setSubmited(true);
     if (newPassword.valid) {
-      //todo: make it dynamic when we manage acces spaces
       const resetPasswordObject = {
-        email: "ala.hamadi@esprit.com",
+        email: currentUser?.email,
         password: oldPassword,
         newPassword: newPassword.value,
       };
@@ -146,8 +147,9 @@ const Settings = (props) => {
           });
         })
         .catch((err) => {
-          console.log(err);
-          notify("Invalid Password!", toast, "error");
+          if (err.response.data.message === "Invalid Password!")
+            notify("Invalid Password!", toast, "error");
+          else setInvalidPassword(true);
         });
     }
   };
@@ -343,7 +345,82 @@ const Settings = (props) => {
                   <div className='pe-lg-14'>
                     {/* heading */}
                     <h5 className='mb-4'>Password</h5>
-                    {/* todo form password */}
+                    <form className=' row row-cols-1 row-cols-lg-2'>
+                      {/* input */}
+                      <div className='mb-3 col'>
+                        <label className='form-label'>New Password</label>
+                        <input
+                          type='password'
+                          className='form-control'
+                          placeholder='**********'
+                          value={newPassword.value}
+                          onChange={handleChangeNewPassword}
+                        />
+                      </div>
+                      {/* input */}
+                      <div className='mb-3 col'>
+                        <label className='form-label'>current Password</label>
+                        <input
+                          type='password'
+                          className='form-control'
+                          placeholder='**********'
+                          value={oldPassword}
+                          onChange={(e) => setOldPassword(e.target.value)}
+                        />
+                      </div>
+                      {/* input */}
+                      {submited &&
+                        !newPassword.valid &&
+                        newPassword.value !== "" && (
+                          <div className='alert alert-danger' role='alert'>
+                            <p className='mb-1'>
+                              Password must be at least 8 characters long, at
+                              least one uppercase letter, one lowercase letter,
+                              and one number
+                            </p>
+                          </div>
+                        )}
+                      {submited &&
+                        newPassword.valid &&
+                        newPassword.value === oldPassword &&
+                        invalidPassword && (
+                          <div className='alert alert-danger' role='alert'>
+                            <p className='mb-1'>
+                              your new password must be different from your old
+                              one
+                            </p>
+                          </div>
+                        )}
+
+                      <div className='col-lg-12'>
+                        <p className='mb-4'>
+                          Can’t remember your current password?
+                          <a href='#'> Reset your password.</a>
+                        </p>
+                        <span
+                          className='btn btn-primary'
+                          onClick={resetPassword}
+                        >
+                          Save Password
+                        </span>
+                      </div>
+                    </form>
+                  </div>
+                  <hr className='my-10' />
+                  <div>
+                    {/* heading */}
+                    <h5 className='mb-4'>Delete Account</h5>
+                    <p className='mb-2'>
+                      Would you like to delete your account?
+                    </p>
+                    <p className='mb-5'>
+                      This account contain 12 orders, Deleting your account will
+                      remove all the order details associated with it.
+                    </p>
+                    {/* btn */}
+                    <a href='#' className='btn btn-outline-danger'>
+                      I want to delete my account
+                    </a>
                   </div>
                 </div>
               </div>
