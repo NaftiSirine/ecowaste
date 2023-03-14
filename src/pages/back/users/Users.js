@@ -126,7 +126,7 @@ const Users = (props) => {
                               <td>
                                 <div className='d-flex align-items-center'>
                                   <img
-                                    src={user.image}
+                                    src={`http://localhost:5000/uploads/${user.image}`}
                                     alt=''
                                     className='avatar avatar-xs rounded-circle'
                                   />
@@ -175,7 +175,7 @@ const Users = (props) => {
                     </table>
                   </div>
                   <div className='border-top d-md-flex justify-content-between align-items-center p-6'>
-                    <span>Showing 1 to 8 of 12 entries</span>
+                    <span>Users: {allUsers.length}</span>
                     {allUsers.length > seeMore && (
                       <nav className='mt-2 mt-md-0'>
                         <ul className='pagination mb-0 '>
