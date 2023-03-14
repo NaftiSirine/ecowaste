@@ -4,25 +4,22 @@ import Header from "../../../components/front/Header";
 import { toast, ToastContainer } from "react-toastify";
 import { notify } from "../../../utils/HelperFunction";
 import "react-toastify/dist/ReactToastify.css";
-import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { modifyUser, logout } from "../../../actions/auth";
 const Settings = (props) => {
-  const [submited, setSubmited] = useState(false);
   const dispatch = useDispatch();
-
+  const [submited, setSubmited] = useState(false);
   const { user: currentUser } = useSelector((state) => state.auth);
   const [error, setError] = useState(null);
   const [disabled, setDisabled] = useState(true);
-
-  const [invalidPassword, setInvalidPassword] = useState(false);
 
   const [newPassword, setNewPassword] = useState({
     value: "",
     valid: false,
   });
   const [user, setUser] = useState();
+  const [invalidPassword, setInvalidPassword] = useState(false);
 
   const [oldPassword, setOldPassword] = useState();
   const handleChangeUsername = (e) => {
@@ -136,10 +133,11 @@ const Settings = (props) => {
         newPassword: newPassword.value,
       };
       axios
-        .put(`/api/auth/resetPassword`, resetPasswordObject, {
+        .put(`/api/auth/forgotPassword`, resetPasswordObject, {
           headers: { "Content-Type": "application/json" },
         })
         .then((res) => {
+          console.log("testt");
           notify("User password was updated successfully!", toast, "success");
           setOldPassword("");
           setNewPassword({
@@ -406,22 +404,6 @@ const Settings = (props) => {
                         </span>
                       </div>
                     </form>
-                  </div>
-                  <hr className='my-10' />
-                  <div>
-                    {/* heading */}
-                    <h5 className='mb-4'>Delete Account</h5>
-                    <p className='mb-2'>
-                      Would you like to delete your account?
-                    </p>
-                    <p className='mb-5'>
-                      This account contain 12 orders, Deleting your account will
-                      remove all the order details associated with it.
-                    </p>
-                    {/* btn */}
-                    <a href='#' className='btn btn-outline-danger'>
-                      I want to delete my account
-                    </a>
                   </div>
                 </div>
               </div>
