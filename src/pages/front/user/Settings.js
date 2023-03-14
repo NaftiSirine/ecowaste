@@ -4,6 +4,7 @@ import Header from "../../../components/front/Header";
 import { toast, ToastContainer } from "react-toastify";
 import { notify } from "../../../utils/HelperFunction";
 import "react-toastify/dist/ReactToastify.css";
+import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { modifyUser, logout } from "../../../actions/auth";
@@ -130,12 +131,12 @@ const Settings = (props) => {
     setSubmited(true);
     if (newPassword.valid) {
       const resetPasswordObject = {
-        email: currentUser?.email,
+        email: currentUser.email,
         password: oldPassword,
         newPassword: newPassword.value,
       };
       axios
-        .put(`/api/auth/forgotPassword`, resetPasswordObject, {
+        .put(`/api/auth/resetPassword`, resetPasswordObject, {
           headers: { "Content-Type": "application/json" },
         })
         .then((res) => {
