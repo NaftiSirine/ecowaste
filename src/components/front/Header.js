@@ -1026,8 +1026,10 @@ function Navbar() {
                           </a>
                         </li>
                         <li>
+
                           <a className="dropdown-item">
                             <Link to="/settings">Settings</Link>
+
                           </a>
                         </li>
                         <li>
@@ -1581,8 +1583,11 @@ function Navbar() {
                             className="dropdown-item"
                             href="pages/account-settings.html"
                           >
+
                             <Link to="/">Settings</Link>
+
                           </a>
+
                         </li>
                         <li>
                           <a
