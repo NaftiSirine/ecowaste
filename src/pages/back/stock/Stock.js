@@ -20,6 +20,7 @@ function Stock(){
       };
       fetchStockHistories();
     }, [() => stock]);
+
     const addToStock = async ()=>{
         try {
             const response = await axios.post(`/products/prod/addToStock/${id}` , stock);
@@ -100,6 +101,7 @@ Remove      </Button>
                         <option defaultValue="Action">Action</option>
                         <option >Add</option>
                         <option>Remove</option>
+
                       </select>
                     </div>
                   </div>
