@@ -23,27 +23,31 @@ const ProductDetail = (props) => {
   const [review, setReview] = useState({});
   const [reviews, setReviews] = useState([]);
 
-  const [reviewMessage, setReviewMessage] = useState("");
-  const [headline, setHeadline] = useState("");
-  console.log(currentUser);
 
-  const handleRating = (rate) => {
-    setRatingValue(rate);
-  };
-  console.log(product);
-  useEffect(() => {
-    console.log(id);
-    axios
-      .get(`http://localhost:5000/products/prod/${id}`)
-      .then(function (response) {
-        console.log(response.data);
-        setProduct(response.data);
-        //setName(response.data.name);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-  }, [id]);
+    const[reviewMessage,setReviewMessage]= useState(""); 
+    const[headline,setHeadline]= useState(""); 
+    const [error, setError] = useState(null);
+    const [seeMore, setSeeMore] = useState(2);
+
+
+    const handleRating = (rate) => {
+      setRatingValue(rate)
+    }
+
+
+    useEffect(() => {
+        console.log(id)
+      axios.get(`http://localhost:5000/products/prod/${id}`)
+        .then(function (response) {
+          
+          setProduct(response.data);
+          //setName(response.data.name);
+        })
+        .catch(function (error) {
+          console.log(error);
+          
+        });
+    }, [id]);
 
   const [quantity, setQuantity] = useState(1);
 
@@ -59,26 +63,18 @@ const ProductDetail = (props) => {
     }
   };
   const addReview = async () => {
-    setReview({
-      username: currentUser.username,
-      image: currentUser.image,
-      rating: ratingValue,
-      review: reviewMessage,
-      headline: headline,
-    });
-    console.log(review);
-    console.log("ddddddddddddddddddddddddddddd");
+
+    setReview({ username: currentUser.username , image : currentUser.image , rating: ratingValue  , review : reviewMessage , headline : headline});
     try {
-      const response = await axios.post(`/products/prod/addReview/${id}`, {
-        username: currentUser.username,
-        image: currentUser.image,
-        rating: ratingValue,
-        review: reviewMessage,
-        headline: headline,
-      });
-      console.log(response.data); // Assuming that the server returns some data upon successful addition to stock
+      const response = await axios.post(
+        `/products/prod/addReview/${id}`,
+        { username: currentUser.username , image : currentUser.image , rating: ratingValue  , review : reviewMessage , headline : headline}      );
+        document.getElementById("myForm").reset(); // reset the form
+
     } catch (error) {
-      console.log(error);
+      console.log(error.response.data.message);
+      setError(error.response.data.message);
+
     }
   };
   useEffect(() => {
@@ -88,6 +84,14 @@ const ProductDetail = (props) => {
     };
     fetchReviews();
   }, [() => review]);
+
+   
+  const handleSeeMore = () => {
+    setSeeMore((prevState) => prevState + 2);
+  };
+    return (
+    <>
+
 
   return (
     <>
@@ -172,41 +176,26 @@ const ProductDetail = (props) => {
                     </div>
                   </div>
 
-                  <div className='col-lg-6'>
-                    <div className='ps-lg-8 mt-6 mt-lg-0'>
-                      <a href='#!' className='mb-4 d-block'>
-                        {" "}
-                        {product.price}{" "}
-                      </a>
-                      <h2 className='mb-1 h1'>{product.name} </h2>
-                      <div className='mb-4'>
-                        <small className='text-warning'>
-                          <i className='bi bi-star-fill' />
-                          <i className='bi bi-star-fill' />
-                          <i className='bi bi-star-fill' />
-                          <i className='bi bi-star-fill' />
-                          <i className='bi bi-star-half' />
-                        </small>
-                        <a href='#' className='ms-2'>
-                          (30 reviews)
-                        </a>
-                      </div>
-                      <div className='fs-4'>
-                        <span className='fw-bold text-dark'>
-                          {product.reduction} DT{" "}
-                        </span>
-                        <span className='text-decoration-line-through text-muted'>
-                          {" "}
-                          {product.price} DT
-                        </span>
-                        <span>
-                          <small className='fs-6 ms-2 text-danger'>
-                            26% Off
-                          </small>
-                        </span>
-                      </div>
-                      <hr className='my-6' />
-                      {/*<div className="mb-4">
+
+                    <div className="col-lg-6">
+                        <div className="ps-lg-8 mt-6 mt-lg-0">
+                        <a href="#!" className="mb-4 d-block"> {product.price} </a>
+                        <h2 className="mb-1 h1">{product.name} </h2>
+                        <div className="mb-4">
+                            <small className="text-warning">
+                            <i className="bi bi-star-fill" />
+                            <i className="bi bi-star-fill" />
+                            <i className="bi bi-star-fill" />
+                            <i className="bi bi-star-fill" />
+                            <i className="bi bi-star-half" /></small><a href="#" className="ms-2">({product.nbReviewers} reviews)</a>
+                        </div>
+                        <div className="fs-4">
+                            <span className="fw-bold text-dark">{product.reduction} DT  </span>
+                            <span className="text-decoration-line-through text-muted">  {product.price} DT</span><span><small className="fs-6 ms-2 text-danger">26% Off</small></span>
+                        </div>
+                        <hr className="my-6" />
+                        {/*<div className="mb-4">
+
                             <button type="button" className="btn btn-outline-secondary">
                             250g
                             </button>
@@ -359,19 +348,15 @@ const ProductDetail = (props) => {
                             {/* title */}
                             <h4 className='mb-3'>Customer reviews</h4>
                             <span>
-                              {/* rating */}{" "}
-                              <small className='text-warning'>
-                                <i className='bi bi-star-fill' />
-                                <i className='bi bi-star-fill' />
-                                <i className='bi bi-star-fill' />
-                                <i className='bi bi-star-fill' />
-                                <i className='bi bi-star-half' />
-                              </small>
-                              <span className='ms-3'>4.1 out of 5</span>
-                              <small className='ms-3'>
-                                11,130 global ratings
-                              </small>
-                            </span>
+
+                              {/* rating */} <small className="text-warning"> 
+                              <i className="bi bi-star-fill" />
+                                <i className="bi bi-star-fill" />
+                                <i className="bi bi-star-fill" />
+                                <i className="bi bi-star-fill" />
+                                <i className="bi bi-star-half" />
+                                </small><span className="ms-3">{product.stars} out of 5</span><small className="ms-3">{product.nbReviewers} global ratings</small></span>
+
                           </div>
                           <div className='mb-8'>
                             {/* progress */}
@@ -531,50 +516,28 @@ const ProductDetail = (props) => {
                               </select>
                             </div>
                           </div>
-                          {reviews.map((reviews) => (
-                            <div className='d-flex border-bottom pb-6 mb-6 pt-4'>
-                              {/* img */}
-                              <img
-                                src={`http://localhost:5001/uploads/${reviews?.image}`}
-                                alt=''
-                                className='rounded-circle avatar-lg'
-                              />
-                              <div className='ms-5'>
-                                <h6 className='mb-1'>{reviews.username}</h6>
-                                {/* content */}
-                                <p className='small'>
-                                  {" "}
-                                  <span className='text-muted'>
-                                    {new Date(reviews.createdAt).toLocaleString(
-                                      "en-GB",
-                                      {
-                                        day: "numeric",
-                                        month: "numeric",
-                                        year: "numeric",
-                                        hour: "numeric",
-                                        minute: "numeric",
-                                      }
-                                    )}
-                                  </span>
-                                </p>
-                                {/* rating */}
-                                <div className=' mb-2'>
-                                  {[...Array(Math.floor(reviews.rating))].map(
-                                    (_, index) => (
-                                      <i
-                                        key={index}
-                                        className='bi bi-star-fill text-warning'
-                                      ></i>
-                                    )
-                                  )}
-                                  {[
-                                    ...Array(5 - Math.floor(reviews.rating)),
-                                  ].map((_, index) => (
-                                    <i
-                                      key={Math.floor(reviews.rating) + index}
-                                      className='bi bi-star text-warning'
-                                    ></i>
-                                  ))}
+
+                          {reviews.slice(0, seeMore).map((reviews,index) => (
+                          <div className="d-flex border-bottom pb-6 mb-6 pt-4" key={index}>
+                            {/* img */}<img src={`http://localhost:5001/uploads/${reviews.image}`} alt="" className="rounded-circle avatar-lg" />
+                            <div className="ms-5">
+                              <h6 className="mb-1">
+                                {reviews.username}
+                              </h6>
+                              {/* content */}
+                              <p className="small"> <span className="text-muted">{new Date(
+                                reviews.createdAt
+                              ).toLocaleString("en-GB", {
+                                day: "numeric",
+                                month: "numeric",
+                                year: "numeric",
+                                hour: "numeric",
+                                minute: "numeric",
+                              })}</span>
+                            </p>
+                              {/* rating */}
+                              <div className=" mb-2">
+
 
                                   <span className='ms-3 text-dark fw-bold'>
                                     {reviews.headline}
@@ -589,23 +552,25 @@ const ProductDetail = (props) => {
                                   Barcode on the weight etc. .
                                 </p>
                               </div>
+
+                              <p>{reviews.review} .</p>
+
                             </div>
-                          ))}
-                          <div>
-                            <a
-                              href='#'
-                              className='btn btn-outline-gray-400 text-muted'
-                            >
-                              Read More Reviews
-                            </a>
                           </div>
+ ))}{reviews.length > seeMore && (
+                          <div>
+                            <a className="btn btn-outline-gray-400 text-muted" onClick={handleSeeMore}>Read More Reviews</a>
+
+                          </div>
+                          )}
                         </div>
                         <div>
                           {/* rating */}
-                          <h3 className='mb-5'>Create Review</h3>
-                          <div className='border-bottom py-4 mb-4'>
-                            <h4 className='mb-3'>Overall rating</h4>
-                            <div id='rater' />
+
+                          <h3 className="mb-5">Create Review</h3>
+                          <div className="border-bottom py-4 mb-4">
+                            <h4 className="mb-3">Overall rating*</h4>
+                            <div id="rater" />
                             <Rating
                               onClick={handleRating}
                               ratingValue={ratingValue}
@@ -628,38 +593,36 @@ const ProductDetail = (props) => {
                           </div>
 
                           {/* form control */}
-                          <div className='border-bottom py-4 mb-4'>
-                            <h5>Add a headline</h5>
-                            <input
-                              type='text'
-                              className='form-control'
-                              placeholder='What’s most important to know'
-                              onChange={(e) => setHeadline(e.target.value)}
-                            />
+
+                          <form id="myForm">
+                          <div className="border-bottom py-4 mb-4">
+                            <h5>Add a headline*</h5>
+                            <input type="text" className="form-control" placeholder="What’s most important to know" 
+                            onChange={(e) => setHeadline(e.target.value)} />
+
                           </div>
 
                           <div className=' py-4 mb-4'>
                             {/* heading */}
-                            <h5>Add a written review</h5>
-                            <textarea
-                              className='form-control'
-                              rows={3}
-                              placeholder='What did you like or dislike? What did you use this product for?'
-                              onChange={(e) => setReviewMessage(e.target.value)}
-                            />
+
+                            <h5>Add a written review*</h5>
+                            <textarea className="form-control" rows={3} placeholder="What did you like or dislike? What did you use this product for?" onChange={(e) => setReviewMessage(e.target.value) } />
+
                           </div>
+                          {error && (
+                            <div className="alert alert-danger" role="alert">
+                              {error}
+                            </div>
+                          )}
                           {/* button */}
-                          <div className='d-flex justify-content-end'>
-                            <a
-                              type='button'
-                              href='#'
-                              className='btn btn-primary'
-                              onClick={addReview}
-                            >
-                              Submit Review
-                            </a>
+
+                          <div className="d-flex justify-content-end">
+                            <a type="button"  className="btn btn-primary"   onClick={addReview}>Submit Review</a>
+
                           </div>
+                          </form>
                         </div>
+                     
                       </div>
                     </div>
                   </div>
