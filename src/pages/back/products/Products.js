@@ -272,8 +272,7 @@ const Products = (props) => {
                                       </li>}
                                       {(currentPage===1)  && 
                                       <li className="page-item disabled">
-                                        <a className="page-link " >
-                                          Previous</a>
+                                        <a className="page-link " >  Previous</a>
                                       </li>}
                                         {Array.from({ length: Math.ceil(allProducts.length / itemsPerPage) }, (_, i) => (
                                           <li

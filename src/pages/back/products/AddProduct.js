@@ -96,9 +96,7 @@ const AddProduct = (props) => {
         .then(function (res) {
           notify("Product was created successfully!", toast, "success");
           console.log(res.data);
-          //window.location.href = '/dashboard/products';
-          
-          
+            window.location.href = '/dashboard/products';     
       })
       .catch((err) => {
             console.log(err);

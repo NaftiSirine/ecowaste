@@ -68,7 +68,7 @@ function Register() {
     console.log("formData : ",formData);
 
     axios
-      .post("http://localhost:5000/api/auth/signup", formData)
+      .post("http://localhost:5001/auth/signup", formData)
       .then(function (response) {
         console.log(response.data.message);
         window.location.href = "/";
