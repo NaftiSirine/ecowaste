@@ -1,4 +1,5 @@
-import axios, { all } from "axios";
+import "./products.css";
+import axios from "axios";
 import { useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
@@ -201,39 +202,34 @@ const Products = (props) => {
                 <div className="card-body p-0">
                   {/* table */}
                   <div className="table-responsive">
-                    <table className="table table-centered table-hover text-nowrap table-borderless mb-0 table-with-checkbox">
+                    <table className="table table-centered table-hover table-borderless mb-0 table-with-checkbox">
                       <thead className="bg-light">
                         <tr>
-                          <th>
-                            <div className="form-check">
-                              <input
-                                className="form-check-input"
-                                type="checkbox"
-                                defaultValue
-                                id="checkAll"
-                              />
-                              <label
-                                className="form-check-label"
-                                htmlFor="checkAll"
-                              ></label>
-                            </div>
-                          </th>
                           <th>Image</th>
-                          <th onClick={() => handleSort("code")}>
+                          <th onClick={() => handleSort("code")} className="column disposable">
   Code {sortOrder.code === "asc" ? <i className="fa fa-sort-alpha-down"></i> : <i className="fa fa-sort-alpha-up"></i>}
 </th>
-<th onClick={() => handleSort("name")}>
+<th onClick={() => handleSort("name")} className="column">
 Product Name {sortOrder.name === "asc" ? <i className="fa fa-sort-alpha-down"></i> : <i className="fa fa-sort-alpha-up"></i>}
 </th>
-<th onClick={() => handleSort("category")}>
+<th onClick={() => handleSort("category")} className="column disposable disposable2">
   Category {sortOrder.category === "asc" ? <i className="fa fa-sort-alpha-down"></i> : <i className="fa fa-sort-alpha-up"></i>}
-</th>                          <th>Stock</th>
-                          <th>Quantity</th>
-                          <th>Price</th>
-                          <th>Reduction Price</th>
-                          <th>Create at</th>
+</th>                       
+
+                          <th className="column disposable">Stock</th>
+                          <th className="column disposable disposable2">
+                            Quantity
+                          </th>
+                          <th className="column disposable disposable2">
+                            Price
+                          </th>
+                          <th className="column disposable disposable2">
+                            Reduction Price
+                          </th>
+                          <th className="column disposable disposable2">
+                            Create at
+                          </th>
                           <th>Action</th>
-                          <th />
                         </tr>
                       </thead>
                       <tbody>
@@ -247,21 +243,7 @@ Product Name {sortOrder.name === "asc" ? <i className="fa fa-sort-alpha-down"></
                           .map((product, index) => {
                             return (
                               <tr key={index}>
-                                <td>
-                                  <div className="form-check">
-                                    <input
-                                      className="form-check-input"
-                                      type="checkbox"
-                                      defaultValue
-                                      id="productOne"
-                                    />
-                                    <label
-                                      className="form-check-label"
-                                      htmlFor="productOne"
-                                    ></label>
-                                  </div>
-                                </td>
-                                <td>
+                                <td className="column">
                                   <a href="#!">
                                     <img
                                       src={`http://localhost:5002/productUploads/${product.image}`}
@@ -270,15 +252,18 @@ Product Name {sortOrder.name === "asc" ? <i className="fa fa-sort-alpha-down"></
                                     />
                                   </a>
                                 </td>
-                                <td>#{product.code}</td>
-                                <td>
+                                <td className="column disposable">
+                                  #{product.code}
+                                </td>
+                                <td className="column  ">
                                   <a href="#" className="text-reset">
                                     {product.name}
                                   </a>
                                 </td>
-
-                                <td>{product.category.label}</td>
-                                <td style={{ textAlign: "center" }}>
+                                <td className="column disposable disposable2">
+                                  {product.category.label}
+                                </td>
+                                <td className="column disposable">
                                   <a
                                     type="button"
                                     onClick={() =>
@@ -301,16 +286,16 @@ Product Name {sortOrder.name === "asc" ? <i className="fa fa-sort-alpha-down"></
                                     </span>
                                   </a>
                                 </td>
-                                <td style={{ textAlign: "center" }}>
+                                <td className="column disposable disposable2">
                                   {product.quantity}
                                 </td>
-                                <td style={{ textAlign: "center" }}>
+                                <td className="column disposable disposable2">
                                   {product.price}
                                 </td>
-                                <td style={{ textAlign: "center" }}>
+                                <td className="column disposable disposable2">
                                   {product.reduction}
                                 </td>
-                                <td style={{ textAlign: "center" }}>
+                                <td className="column disposable disposable2">
                                   {/*
                                 {new Date(product.addedDate).toLocaleString()}
                                 */}
@@ -318,7 +303,90 @@ Product Name {sortOrder.name === "asc" ? <i className="fa fa-sort-alpha-down"></
                                     product.addedDate
                                   ).toLocaleDateString()}
                                 </td>
-                                <td>
+                                <td
+                                  className="column "
+                                  style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    lineHeight: "3.1rem",
+                                  }}
+                                >
+                                  <div className="dropdown eye-field2">
+                                    <a
+                                      href="#"
+                                      className="text-reset"
+                                      data-bs-toggle="dropdown"
+                                      aria-expanded="false"
+                                    >
+                                      <i className="feather-icon icon-eye fs-5" />
+                                    </a>
+                                    <ul className="dropdown-menu dropdownForcedAttributes" >
+                                      <li className="line eye-field">
+                                        <a className="dropdown-item">
+                                          <span className="">Code :</span>#
+                                          {product.code}
+                                        </a>
+                                      </li>
+                                      <li className="line eye-field eye-field2">
+                                        <a className="dropdown-item">
+                                          <span className="">Category :</span>
+                                          {product.category.label}
+                                        </a>
+                                      </li>
+                                      <li className="line eye-field">
+                                        <a
+                                          className="dropdown-item"
+                                          onClick={() =>
+                                            navigate(
+                                              `/dashboard/stock/${product._id}`
+                                            )
+                                          }
+                                        >
+                                          <span className="">Stock :</span>
+                                          <span
+                                            className={`badge 
+                                            ${
+                                              product?.inStock
+                                                ? "bg-light-primary text-dark-primary"
+                                                : "bg-light-danger text-dark-danger"
+                                            }`}
+                                          >
+                                            {product?.inStock
+                                              ? "In Stock"
+                                              : "Out of Stock"}
+                                          </span>
+                                        </a>
+                                      </li>
+                                      <li className="line eye-field eye-field2">
+                                        <a className="dropdown-item">
+                                          <span className="">Quantity :</span>
+                                          {product.quantity}
+                                        </a>
+                                      </li>
+                                      <li className="line eye-field eye-field2">
+                                        <a className="dropdown-item">
+                                          <span className="">Price :</span>
+                                          {product.price}
+                                        </a>
+                                      </li>
+                                      <li className="line eye-field eye-field2">
+                                        <a className="dropdown-item">
+                                          <span className="">
+                                            Reduction Price :
+                                          </span>
+                                          {product.reduction}
+                                        </a>
+                                      </li>
+                                      <li className="line eye-field eye-field2" style={{borderBottom:"none"}}> 
+                                        <a className="dropdown-item">
+                                          <span className="">Created at :</span>
+                                          {new Date(
+                                            product.addedDate
+                                          ).toLocaleDateString()}
+                                        </a>
+                                      </li>
+                                    </ul>
+                                  </div>
                                   <div className="dropdown">
                                     <a
                                       href="#"

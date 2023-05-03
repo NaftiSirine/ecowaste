@@ -1,3 +1,4 @@
+import "./orders.css"
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
@@ -55,15 +56,15 @@ const Orders = () => {
               <div className="card-body p-0">
                 {/* table responsive */}
                 <div className="table-responsive">
-                  <table className="table table-centered table-hover text-nowrap table-borderless mb-0 table-with-checkbox">
+                  <table className="table table-centered table-hover table-borderless mb-0 ">
                     <thead className="bg-light">
                       <tr>
-                        <th>Customer</th>
-                        <th>Date &amp; TIme</th>
-                        <th>Payment</th>
-                        <th>Status</th>
-                        <th>Amount</th>
-                        <th />
+                        <th className="column">Customer</th>
+                        <th className="column disposable">Date &amp; TIme</th>
+                        <th className="column disposable">Payment</th>
+                        <th className="column">Status</th>
+                        <th className="column disposable">Amount</th>
+                        <th>Action</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -72,19 +73,61 @@ const Orders = () => {
                         .map((order, index) => {
                           return (
                             <tr key={index}>
-                              <td>{currentUser.username}</td>
 
-                              <td>
+                              <td className="column">{currentUser.username}</td>
+
+                              <td className="column disposable">
                                 {new Date(order.orderDate).toLocaleDateString()}
                               </td>
-                              <td>{order.paymentMethod}</td>
-                              <td>
+                              <td className="column disposable">
+                                {order.paymentMethod}
+                              </td>
+                              <td className="column">
                                 <span className="badge bg-light-primary text-dark-primary">
                                   {order.status}
                                 </span>
                               </td>
-                              <td>{order.totalAmount} DT</td>
-                              <td>
+                              <td className="column disposable">
+                                {order.totalAmount} DT
+                              </td>
+                              <td
+                                className="column "
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  lineHeight: "3.1rem",
+                                }}
+                              >
+                                <div className="dropdown eye-field2">
+                                  <a
+                                    href="#"
+                                    className="text-reset"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false"
+                                  >
+                                    <i className="feather-icon icon-eye fs-5" />
+                                  </a>
+                                  <ul className="dropdown-menu dropdownForcedAttributes">
+                                    <li className="line eye-field">
+                                      <a className="dropdown-item">
+                                        <span className="">Date &amp; TIme</span>
+                                        {new Date(order.orderDate).toLocaleDateString()}
+                                      </a>
+                                    </li>
+                                    <li className="line eye-field eye-field2">
+                                      <a className="dropdown-item">
+                                        <span className="">Payment :</span>
+                                        {order.paymentMethod}
+                                      </a>
+                                    </li>
+                                    <li className="line eye-field eye-field2" style={{borderBottom:"none"}}>
+                                      <a className="dropdown-item">
+                                        <span className="">Amount :</span>
+                                        {order.totalAmount} DT
+                                      </a>
+                                    </li>
+                                  </ul>
+                                </div>
                                 <div className="dropdown">
                                   <a
                                     className="text-reset"

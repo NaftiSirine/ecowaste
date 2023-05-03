@@ -1,3 +1,4 @@
+import "./coupons.css";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
@@ -118,31 +119,24 @@ const Coupons = (props) => {
                 <div className="card-body p-0">
                   {/* table */}
                   <div className="table-responsive">
-                    <table className="table table-centered table-hover text-nowrap table-borderless mb-0 table-with-checkbox">
+                    <table className="table table-centered table-hover table-borderless mb-0">
                       <thead className="bg-light">
                         <tr>
-                          <th>
-                            <div className="form-check">
-                              <input
-                                className="form-check-input"
-                                type="checkbox"
-                                defaultValue
-                                id="checkAll"
-                              />
-                              <label
-                                className="form-check-label"
-                                htmlFor="checkAll"
-                              ></label>
-                            </div>
+                          <th className="column">Code</th>
+                          <th className="column disposable">Discount</th>
+                          <th className="column disposable disposable2">
+                            Max Uses
                           </th>
-                          <th>Code</th>
-                          <th>Discount</th>
-                          <th>Max Uses</th>
-                          <th>Used Times</th>
-                          <th>Expiration Date</th>
-                          <th>Update Date</th>
-                          <th>Action</th>
-                          <th />
+                          <th className="column disposable disposable2">
+                            Used Times
+                          </th>
+                          <th className="column disposable">Expiration Date</th>
+                          <th className="column disposable disposable2">
+                            Update Date
+                          </th>
+                          <th className="column">
+                            Action
+                          </th>
                         </tr>
                       </thead>
                       <tbody>
@@ -151,49 +145,89 @@ const Coupons = (props) => {
                           .map((coupon, index) => {
                             return (
                               <tr key={index}>
-                                <td>
-                                  <div className="form-check">
-                                    <input
-                                      className="form-check-input"
-                                      type="checkbox"
-                                      defaultValue
-                                      id="couponOne"
-                                    />
-                                    <label
-                                      className="form-check-label"
-                                      htmlFor="couponOne"
-                                    ></label>
-                                  </div>
-                                </td>
-
-                                <td>#{coupon.code}</td>
-                                <td>
+                                <td className="column">#{coupon.code}</td>
+                                <td className="column disposable ">
                                   <a href="#" className="text-reset">
                                     {coupon.discount}
                                   </a>
                                 </td>
+                                <td className="column disposable disposable2">
+                                  {coupon.maxUses}
+                                </td>
 
-                                <td>{coupon.maxUses}</td>
-
-                                <td style={{ textAlign: "center" }}>
+                                <td className="column disposable disposable2">
                                   {coupon.usedCount}
                                 </td>
 
-                                <td style={{ textAlign: "center" }}>
+                                <td className="column disposable disposable2">
                                   {new Date(
                                     coupon.expiresAt
                                   ).toLocaleDateString()}
                                 </td>
-                                <td style={{ textAlign: "center" }}>
+
+                                <td className="column disposable disposable2">
+
                                   {new Date(
                                     coupon.updatedAt
                                   ).toLocaleDateString()}
                                 </td>
-                                <td>
-                                  <div
-                                    className="dropd
-                              own"
-                                  >
+                                <td
+                                  className="column "
+                                  style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    lineHeight: "3.1rem",
+                                  }}
+                                >
+                                  <div className="dropdown eye-field2">
+                                    <a
+                                      href="#"
+                                      className="text-reset"
+                                      data-bs-toggle="dropdown"
+                                      aria-expanded="false"
+                                    >
+                                      <i className="feather-icon icon-eye fs-5" />
+                                    </a>
+                                    <ul className="dropdown-menu dropdownForcedAttributes">
+                                      <li className="line eye-field">
+                                        <a className="dropdown-item">
+                                          <span className="">Discount :</span>#
+                                          {coupon.discount}
+                                        </a>
+                                      </li>
+                                      <li className="line eye-field eye-field2">
+                                        <a className="dropdown-item">
+                                          <span className="">Max Uses :</span>
+                                          {coupon.maxUses}
+                                        </a>
+                                      </li>
+                                      <li className="line eye-field eye-field2">
+                                        <a className="dropdown-item">
+                                          <span className="">Used Times :</span>
+                                          {coupon.usedCount}
+                                        </a>
+                                      </li>
+                                      <li className="line eye-field eye-field2">
+                                        <a className="dropdown-item">
+                                          <span className="">Expiration Date :</span>
+                                          {new Date(
+                                            coupon.expiresAt
+                                          ).toLocaleDateString()}
+                                        </a>
+                                      </li>
+                                      <li className="line eye-field eye-field2" style={{ borderBottom: "none" }}>
+                                        <a className="dropdown-item">
+                                          <span className="">
+                                            Update Date :
+                                          </span>
+                                          {new Date(
+                                            coupon.updatedAt
+                                          ).toLocaleDateString()}
+                                        </a>
+                                      </li>
+                                    </ul>
+                                  </div>
+                                  <div className="dropdown">
                                     <a
                                       href="#"
                                       className="text-reset"
