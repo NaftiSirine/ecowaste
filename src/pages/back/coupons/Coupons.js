@@ -14,21 +14,23 @@ const Coupons = (props) => {
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(5);
+
+  function handleItemsPerPageChange(event) {
+    setItemsPerPage(parseInt(event.target.value));
+    setCurrentPage(1);
+  }
+
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-
- 
 
   useEffect(() => {
     const searchObject = { name: searchQueryByCouponCode };
     const sObject = { inStock: stock };
-   if (searchQueryByCouponCode?.length > 0) {
-     
+    if (searchQueryByCouponCode?.length > 0) {
       axios
-        .post(
-          "http://localhost:5000/orders/searchCouponByCode",
-          {code :searchObject.name}
-        )
+        .post("http://localhost:5000/orders/searchCouponByCode", {
+          code: searchObject.name,
+        })
         .then((res) => {
           setAllCoupons(res.data);
         })
@@ -38,7 +40,6 @@ const Coupons = (props) => {
         .get("http://localhost:5000/orders/getAllCoupons")
         .then((res) => {
           setAllCoupons(res.data);
-          
         })
         .catch((error) => {
           console.log(error);
@@ -55,8 +56,8 @@ const Coupons = (props) => {
 
   const deleteCoupon = (id) => {
     axios
-      .post(`http://localhost:5000/orders/deleteCoupon`,{
-        id
+      .post(`http://localhost:5000/orders/deleteCoupon`, {
+        id,
       })
       .then((res) => {
         axios.get("/orders/getAllCoupons").then((res) => {
@@ -110,9 +111,7 @@ const Coupons = (props) => {
                       </form>
                     </div>
                     {/* select option */}
-                    <div className="col-lg-2 col-md-4 col-12">
-                      
-                    </div>
+                    <div className="col-lg-2 col-md-4 col-12"></div>
                   </div>
                 </div>
                 {/* card body */}
@@ -166,7 +165,7 @@ const Coupons = (props) => {
                                     ></label>
                                   </div>
                                 </td>
-                               
+
                                 <td>#{coupon.code}</td>
                                 <td>
                                   <a href="#" className="text-reset">
@@ -175,26 +174,22 @@ const Coupons = (props) => {
                                 </td>
 
                                 <td>{coupon.maxUses}</td>
-                                
-                                  
+
                                 <td style={{ textAlign: "center" }}>
                                   {coupon.usedCount}
                                 </td>
-                             
+
                                 <td style={{ textAlign: "center" }}>
-                               
                                   {new Date(
                                     coupon.expiresAt
                                   ).toLocaleDateString()}
                                 </td>
                                 <td style={{ textAlign: "center" }}>
-                               
                                   {new Date(
                                     coupon.updatedAt
                                   ).toLocaleDateString()}
                                 </td>
                                 <td>
-                                
                                   <div
                                     className="dropd
                               own"
@@ -209,9 +204,7 @@ const Coupons = (props) => {
                                     </a>
                                     <ul className="dropdown-menu">
                                       <li
-                                        onClick={() =>
-                                          deleteCoupon(coupon._id)
-                                        }
+                                        onClick={() => deleteCoupon(coupon._id)}
                                       >
                                         <a className="dropdown-item">
                                           <i className="bi bi-trash me-3" />
@@ -244,7 +237,22 @@ const Coupons = (props) => {
                               <div>
                                 Showing{" "}
                                 {Math.min(itemsPerPage, allCoupons.length)} of{" "}
-                                {allCoupons.length} Coupons
+                                {allCoupons.length} products
+                              </div>
+                              <div>
+                                <div className="d-flex justify-content-between align-items-center">
+                                  <label htmlFor="items-per-page">
+                                    Items per page:
+                                  </label>
+
+                                  <input
+                                    type="number"
+                                    className="form-control"
+                                    id="items-per-page"
+                                    value={itemsPerPage}
+                                    onChange={handleItemsPerPageChange}
+                                  />
+                                </div>
                               </div>
                               <div>
                                 <nav aria-label="Page navigation">

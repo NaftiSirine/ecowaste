@@ -7,12 +7,19 @@ function Stock() {
   const [error, setError] = useState(null);
   const [selectedOption, setSelectedOption] = useState("Action");
   const [stockHistories, setStockHistories] = useState([]);
-  const [seeMore, setSeeMore] = useState(5);
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(5);
+
+  function handleItemsPerPageChange(event) {
+    setItemsPerPage(parseInt(event.target.value));
+    setCurrentPage(1);
+  }
+
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
   const { id } = useParams();
 
-  const handleSeeMore = () => {
-    setSeeMore((prevState) => prevState + 5);
-  };
   function handleSelectChange(event) {
     setSelectedOption(event.target.value);
 
@@ -167,7 +174,7 @@ function Stock() {
                     </thead>
                     <tbody>
                       {stockHistories
-                        .slice(0, seeMore)
+                        .slice(startIndex, endIndex)
                         .map((stockHistories) => (
                           <tr key={stockHistories._id}>
                             <td>{stockHistories.newValue}</td>
@@ -206,22 +213,103 @@ function Stock() {
                           </tr>
                         ))}
                     </tbody>
+                    <tfoot>
+                      <tr>
+                        <td colSpan="10">
+                          <div className="d-flex justify-content-between align-items-center">
+                            <div>
+                              Showing{" "}
+                              {Math.min(itemsPerPage, stockHistories.length)} of{" "}
+                              {stockHistories.length} products
+                            </div>
+                            <div>
+                              <div className="d-flex justify-content-between align-items-center">
+                                <label htmlFor="items-per-page">
+                                  Items per page:
+                                </label>
+
+                                <input
+                                  type="number"
+                                  className="form-control"
+                                  id="items-per-page"
+                                  value={itemsPerPage}
+                                  onChange={handleItemsPerPageChange}
+                                />
+                              </div>
+                            </div>
+                            <div>
+                              <nav aria-label="Page navigation">
+                                <ul className="pagination">
+                                  {startIndex > 1 && (
+                                    <li className="page-item ">
+                                      <a
+                                        className="page-link "
+                                        onClick={() =>
+                                          setCurrentPage(currentPage - 1)
+                                        }
+                                      >
+                                        Previous
+                                      </a>
+                                    </li>
+                                  )}
+                                  {currentPage === 1 && (
+                                    <li className="page-item disabled">
+                                      <a className="page-link ">Previous</a>
+                                    </li>
+                                  )}
+                                  {Array.from(
+                                    {
+                                      length: Math.ceil(
+                                        stockHistories.length / itemsPerPage
+                                      ),
+                                    },
+                                    (_, i) => (
+                                      <li
+                                        key={i}
+                                        className={`page-item ${
+                                          i + 1 === currentPage ? "active" : ""
+                                        }`}
+                                        onClick={() => setCurrentPage(i + 1)}
+                                      >
+                                        <span className="page-link">
+                                          {i + 1}
+                                        </span>
+                                      </li>
+                                    )
+                                  )}
+                                  {endIndex < stockHistories.length && (
+                                    <li className="page-item">
+                                      <a
+                                        className="page-link"
+                                        onClick={() =>
+                                          setCurrentPage(currentPage + 1)
+                                        }
+                                      >
+                                        Next
+                                      </a>
+                                    </li>
+                                  )}
+                                  {endIndex >= stockHistories.length && (
+                                    <li className="page-item disabled">
+                                      <a
+                                        className="page-link"
+                                        onClick={() =>
+                                          setCurrentPage(currentPage + 1)
+                                        }
+                                      >
+                                        Next
+                                      </a>
+                                    </li>
+                                  )}
+                                </ul>
+                              </nav>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    </tfoot>
                   </table>
                 </div>
-              </div>
-              <div className="border-top d-md-flex justify-content-between align-items-center p-6">
-                <span>stockHistories: {stockHistories.length}</span>
-                {stockHistories.length > seeMore && (
-                  <nav className="mt-2 mt-md-0">
-                    <ul className="pagination mb-0 ">
-                      <li className="page-item">
-                        <span className="page-link" onClick={handleSeeMore}>
-                          More
-                        </span>
-                      </li>
-                    </ul>
-                  </nav>
-                )}
               </div>
             </div>
           </div>
