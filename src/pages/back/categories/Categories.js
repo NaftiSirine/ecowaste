@@ -1,14 +1,17 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
-
+import ConfirmationModal from "../../../components/commun/modals/login/ConfirmationModal";
 const Categories = (props) => {
   const navigate = useNavigate();
   const [allCategories, setAllCategories] = useState([]);
-  const [searchQueryByCategoryName, setsearchQueryByCategoryName] =
-    useState("");
+  const [searchQueryByCategoryName, setsearchQueryByCategoryName] = useState("");
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState(null);
 
+  const [seeMore, setSeeMore] = useState(5);
   // Pagination state
+  
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(5);
 
@@ -44,18 +47,33 @@ const Categories = (props) => {
 
   const deleteCategory = (id) => {
     axios
-      .delete(`/products/cat/${id}`)
-      .then((res) => {
-        axios.get("/products/cat").then((res) => {
-          setAllCategories(res.data);
-        });
-      })
-      .catch((err) => console.log(err));
+        .delete(`/products/cat/${id}`)
+        .then((res) => {
+          axios.get("/products/cat").then((res) => {
+            setAllCategories(res.data);
+          });
+        })
+        .catch((err) => console.log(err));
+  }
+  const handleDeleteItem = (category) => {
+    setItemToDelete(category);
+    setShowConfirmationModal(true);
+  };
+  const handleConfirmDelete = () => {
+    deleteCategory(itemToDelete._id);
+    setShowConfirmationModal(false);
   };
 
   return (
     <>
-      <main className="main-content-wrapper">
+
+<main className="main-content-wrapper">
+<ConfirmationModal
+        message="Are you sure you want to delete this item?"
+        show={showConfirmationModal}
+        onHide={() => setShowConfirmationModal(false)}
+        onConfirm={handleConfirmDelete}
+      />
         <div className="container">
           {/* row */}
           <div className="row mb-8">
@@ -161,7 +179,7 @@ const Categories = (props) => {
                                           style={{ cursor: "pointer" }}
                                           className="dropdown-item"
                                           onClick={() =>
-                                            deleteCategory(category._id)
+                                            handleDeleteItem(category)
                                           }
                                         >
                                           <i className="bi bi-trash me-3" />
