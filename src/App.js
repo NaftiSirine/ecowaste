@@ -25,8 +25,8 @@ import OrderDetailBack from "./pages/back/orders/OrderDetail";
 import Coupons from "./pages/back/coupons/Coupons";
 import AddCoupon from "./pages/back/coupons/AddCoupon";
 import EditCoupon from "./pages/back/coupons/EditCoupon";
+import Wishlist from "./pages/front/user/Wishlist";
 //import EditProduct from "./pages/back/products/EditProduct";
-
 
 axios.defaults.baseURL = "http://localhost:5000";
 
@@ -42,9 +42,12 @@ const TemplateBack = React.lazy(() => import("./components/back/TemplateBack"));
 const Products = React.lazy(() => import("./pages/back/products/Products"));
 const AddProduct = React.lazy(() => import("./pages/back/products/AddProduct"));
 
-const ProductDetail  = React.lazy(() => import("./pages/front/products/ProductDetail"));
-const EditProduct  = React.lazy(() => import("./pages/back/products/EditProduct"));
-
+const ProductDetail = React.lazy(() =>
+  import("./pages/front/products/ProductDetail")
+);
+const EditProduct = React.lazy(() =>
+  import("./pages/back/products/EditProduct")
+);
 
 function App() {
   const [showCustomerBoard, setShowCustomerBoard] = useState(false);
@@ -117,13 +120,14 @@ function App() {
           }
         />
         <Route
-         exact 
-         path="/shopByCategory/:idCategory" 
-         element={
-           <Layout
-           ><ShopByCategory />
-           </Layout>
-          } />
+          exact
+          path='/shopByCategory/:idCategory'
+          element={
+            <Layout>
+              <ShopByCategory />
+            </Layout>
+          }
+        />
 
         <Route
           exact
@@ -131,6 +135,15 @@ function App() {
           element={
             <Layout>
               <Settings />
+            </Layout>
+          }
+        />
+        <Route
+          exact
+          path='/wishlist'
+          element={
+            <Layout>
+              <Wishlist />
             </Layout>
           }
         />
@@ -154,7 +167,7 @@ function App() {
             </LayoutBack>
           }
         />
-                       <Route
+        <Route
           exact
           path='/dashboard/coupons'
           element={
@@ -163,7 +176,7 @@ function App() {
             </LayoutBack>
           }
         />
-                <Route
+        <Route
           exact
           path='/dashboard/orders'
           element={
@@ -199,7 +212,7 @@ function App() {
             </LayoutBack>
           }
         />
-          <Route
+        <Route
           exact
           path='/dashboard/addCoupon'
           element={
@@ -235,10 +248,9 @@ function App() {
               <AddProduct />
             </LayoutBack>
           }
-
         />
 
-          <Route
+        <Route
           exact
           path='/dashboard/editProduct'
           element={
@@ -246,8 +258,8 @@ function App() {
               <EditProduct />
             </LayoutBack>
           }
-          />
-          <Route
+        />
+        <Route
           exact
           path='/dashboard/editCoupon'
           element={
@@ -255,12 +267,7 @@ function App() {
               <EditCoupon />
             </LayoutBack>
           }
-          />
-          
-
-             
-           
-
+        />
       </Routes>
     </Suspense>
   );
