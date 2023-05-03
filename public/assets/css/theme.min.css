@@ -35557,3 +35557,13 @@ a:hover {
 .img-prod{
   max-height: 150px;
 }
+
+
+
+
+.nav-column {
+  columns: 2;
+}
+
+
+
