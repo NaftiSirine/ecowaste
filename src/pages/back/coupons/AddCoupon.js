@@ -24,6 +24,7 @@ const AddCoupon = (props) => {
         console.log(response.data);
 
         notify("Coupon Added Succesfully!", toast, "success");
+        window.location.href = '/dashboard/coupons';
       })
       .catch((error) => {
         console.log(error);

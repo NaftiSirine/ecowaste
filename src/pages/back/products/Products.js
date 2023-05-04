@@ -4,9 +4,12 @@ import { useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
 import { notify } from "../../../utils/HelperFunction";
+import ConfirmationModal from "../../../components/commun/modals/login/ConfirmationModal";
 
 const Products = (props) => {
   const navigate = useNavigate();
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState(null);
 
   const [allProducts, setAllProducts] = useState([]);
   const [searchQueryByProductname, setSearchQueryByProductname] = useState("");
@@ -140,10 +143,23 @@ const Products = (props) => {
   
   
   
-  
+    const handleDeleteItem = (product) => {
+    setItemToDelete(product);
+    setShowConfirmationModal(true);
+  };
+  const handleConfirmDelete = () => {
+    deleteProduct(itemToDelete._id);
+    setShowConfirmationModal(false);
+  };
+
   return (
     <>
-    
+    <ConfirmationModal
+        message="Are you sure you want to delete this item?"
+        show={showConfirmationModal}
+        onHide={() => setShowConfirmationModal(false)}
+        onConfirm={handleConfirmDelete}
+      />
       <main className="main-content-wrapper">
         <div className="container">
           <div className="row mb-8">
@@ -400,7 +416,8 @@ Product Name {sortOrder.name === "asc" ? <i className="fa fa-sort-alpha-down"></
                                     <ul className="dropdown-menu">
                                       <li
                                         onClick={() =>
-                                          deleteProduct(product._id)
+                                          handleDeleteItem(product)
+                                         
                                         }
                                       >
                                         <a className="dropdown-item">

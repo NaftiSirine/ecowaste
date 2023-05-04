@@ -39,14 +39,29 @@ const ProductDetail = (props) => {
         `http://localhost:5000/products/prod/${id}`
       );
       setProduct(response.data);
+      console.log(response.data);
     } catch (error) {
       console.log(error);
     }
   };
 
+  // const addProdcutToViewedHistorylist = async () => {
+  //   //todo
+  //   try {
+  //     const response = await axios.put(
+  //       `http://localhost:5000/addProdcutToViewedHistorylist`,
+  //       { email: currentUser?.email, productsId: id, categoryId: categoryId }
+  //     );
+  //     setProduct(response.data);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
   useEffect(() => {
     getProduct(); // call the async function
   }, [id,product]);
+
 
   useEffect(() => {
     if (product && product.stars) {
@@ -123,35 +138,52 @@ const ProductDetail = (props) => {
   const handleSeeMore = () => {
     setSeeMore((prevState) => prevState + 2);
   };
+  const addProdcutToWishlist = (prod) => {
+    const req = {
+      email: currentUser?.email,
+      products: { ...prod, quantity: 1 },
+    };
+    axios
+      .put("http://localhost:5000/api/addProdcutToWishlist/", req)
+      .then((res) => {
+        notify("Product was added to the wishlist!", toast, "success");
+        setCall(!call);
+
+        dispatch(refreshUser(currentUser?.id));
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   return (
     <>
       <div>
         <ToastContainer />
-        <div className="container">
-          <div className="modal-dialog modal-xl modal-dialog-centered">
+        <div className='container'>
+          <div className='modal-dialog modal-xl modal-dialog-centered'>
             <div
-              className="modal-content "
+              className='modal-content '
               style={{ paddingTop: "150 px", marginTop: "150 px" }}
             >
-              <div className="modal-body p-8">
-                <div className="position-absolute top-0 end-0 me-3 mt-3">
+              <div className='modal-body p-8'>
+                <div className='position-absolute top-0 end-0 me-3 mt-3'>
                   <button
-                    type="button"
-                    className="btn-close"
-                    data-bs-dismiss="modal"
-                    aria-label="Close"
+                    type='button'
+                    className='btn-close'
+                    data-bs-dismiss='modal'
+                    aria-label='Close'
                   />
                 </div>
-                <div className="row">
-                  <div className="col-lg-6">
+                <div className='row'>
+                  <div className='col-lg-6'>
                     {/* img slide */}
 
-                    <div className="product productModal" id="productModal">
-                      <div className="zoom">
+                    <div className='product productModal' id='productModal'>
+                      <div className='zoom'>
                         {/* img */}
                         <img
                           src={`http://localhost:5002/productUploads/${product.image}`}
-                          alt=""
+                          alt=''
                         />
                       </div>
                     </div>
@@ -202,53 +234,53 @@ const ProductDetail = (props) => {
                   */}
                   </div>
 
-                  <div className="col-lg-6">
-                    <div className="ps-lg-8 mt-6 mt-lg-0">
-                      <a href="#!" className="mb-4 d-block">
+                  <div className='col-lg-6'>
+                    <div className='ps-lg-8 mt-6 mt-lg-0'>
+                      <a href='#!' className='mb-4 d-block'>
                         {" "}
                       </a>
-                      <h2 className="mb-1 h1">{product.name} </h2>
-                      <div className="mb-4">
+                      <h2 className='mb-1 h1'>{product.name} </h2>
+                      <div className='mb-4'>
                         {!isNaN(stars) && (
                           <>
                             {[...Array(Math.floor(stars))].map((_, index) => (
                               <i
                                 key={index}
-                                className="bi bi-star-fill text-warning"
+                                className='bi bi-star-fill text-warning'
                               ></i>
                             ))}
                             {stars % 1 !== 0 && (
                               <i
                                 key={Math.floor(stars) + "-half"}
-                                className="bi bi-star-half text-warning"
+                                className='bi bi-star-half text-warning'
                               ></i>
                             )}
                             {[...Array(5 - Math.ceil(stars))].map(
                               (_, index) => (
                                 <i
                                   key={Math.ceil(stars) + index}
-                                  className="bi bi-star text-warning"
+                                  className='bi bi-star text-warning'
                                 ></i>
                               )
                             )}
                           </>
                         )}{" "}
                         {stars}
-                        <a href="#" className="ms-2">
+                        <a href='#' className='ms-2'>
                           ({product.nbReviewers} reviews)
                         </a>
                       </div>
-                      <div className="fs-4">
-                        <span className="fw-bold text-dark">
+                      <div className='fs-4'>
+                        <span className='fw-bold text-dark'>
                           {product.reduction} DT{" "}
                         </span>
-                        <span className="text-decoration-line-through text-muted">
+                        <span className='text-decoration-line-through text-muted'>
                           {" "}
                           {product.price} DT
                         </span>
                         <span></span>
                       </div>
-                      <hr className="my-6" />
+                      <hr className='my-6' />
                       {/*<div className="mb-4">
 
 
@@ -262,44 +294,45 @@ const ProductDetail = (props) => {
                             1kg
                             </button>
                          </div>*/}
-                      <div className="mt-3 row justify-content-start g-2 align-items-center">
-                        <div className="col-lg-4 col-md-5 col-6 d-grid">
+                      <div className='mt-3 row justify-content-start g-2 align-items-center'>
+                        <div className='col-lg-4 col-md-5 col-6 d-grid'>
                           {/* button */}
                           {/* btn */}
                           <button
-                            type="button"
-                            className="btn btn-primary"
+                            type='button'
+                            className='btn btn-primary'
                             onClick={() => addProdcutToCart(product)}
                           >
-                            <i className="feather-icon icon-shopping-bag me-2" />
+                            <i className='feather-icon icon-shopping-bag me-2' />
                             Add to cart
                           </button>
                         </div>
-                        <div className="col-md-4 col-5">
+                        <div className='col-md-4 col-5'>
                           {/* btn */}
                           <a
-                            className="btn btn-light"
-                            href="#"
-                            data-bs-toggle="tooltip"
-                            data-bs-html="true"
-                            aria-label="Compare"
+                            className='btn btn-light'
+                            href='#'
+                            data-bs-toggle='tooltip'
+                            data-bs-html='true'
+                            aria-label='Compare'
                           >
-                            <i className="bi bi-arrow-left-right" />
+                            <i className='bi bi-arrow-left-right' />
                           </a>
-                          <a
-                            className="btn btn-light"
-                            href="#!"
-                            data-bs-toggle="tooltip"
-                            data-bs-html="true"
-                            aria-label="Wishlist"
+                          <span
+                            className='btn btn-light'
+                            data-bs-toggle='tooltip'
+                            data-bs-html='true'
+                            aria-label='Wishlist'
+                            onClick={() => addProdcutToWishlist(product)}
+                            style={{ cursor: "pointer" }}
                           >
-                            <i className="feather-icon icon-heart" />
-                          </a>
+                            <i className='feather-icon icon-heart' />
+                          </span>
                         </div>
                       </div>
-                      <hr className="my-6" />
+                      <hr className='my-6' />
                       <div>
-                        <table className="table table-borderless">
+                        <table className='table table-borderless'>
                           <tbody>
                             <tr>
                               <td>Product Code:</td>
@@ -333,51 +366,51 @@ const ProductDetail = (props) => {
         </div>
       </div>
 
-      <section className="mt-lg-14 mt-8 ">
-        <div className="container">
-          <div className="row">
-            <div className="col-md-12">
+      <section className='mt-lg-14 mt-8 '>
+        <div className='container'>
+          <div className='row'>
+            <div className='col-md-12'>
               <ul
-                className="nav nav-pills nav-lb-tab"
-                id="myTab"
-                role="tablist"
+                className='nav nav-pills nav-lb-tab'
+                id='myTab'
+                role='tablist'
               >
                 {/* nav item */}
-                <li className="nav-item" role="presentation">
+                <li className='nav-item' role='presentation'>
                   {/* btn */}{" "}
                   <button
-                    className="nav-link"
-                    id="reviews-tab"
-                    data-bs-toggle="tab"
-                    data-bs-target="#reviews-tab-pane"
-                    type="button"
-                    role="tab"
-                    aria-controls="reviews-tab-pane"
-                    aria-selected="false"
+                    className='nav-link'
+                    id='reviews-tab'
+                    data-bs-toggle='tab'
+                    data-bs-target='#reviews-tab-pane'
+                    type='button'
+                    role='tab'
+                    aria-controls='reviews-tab-pane'
+                    aria-selected='false'
                   >
                     Reviews
                   </button>
                 </li>
               </ul>
               {/* tab content */}
-              <div className="tab-content" id="myTabContent">
+              <div className='tab-content' id='myTabContent'>
                 {/* tab pane */}
 
                 <div
-                  className="tab-pane fade"
-                  id="reviews-tab-pane"
-                  role="tabpanel"
-                  aria-labelledby="reviews-tab"
+                  className='tab-pane fade'
+                  id='reviews-tab-pane'
+                  role='tabpanel'
+                  aria-labelledby='reviews-tab'
                   tabIndex={0}
                 >
-                  <div className="my-8">
+                  <div className='my-8'>
                     {/* row */}
-                    <div className="row">
-                      <div className="col-md-4">
-                        <div className="me-lg-12 mb-6 mb-md-0">
-                          <div className="mb-5">
+                    <div className='row'>
+                      <div className='col-md-4'>
+                        <div className='me-lg-12 mb-6 mb-md-0'>
+                          <div className='mb-5'>
                             {/* title */}
-                            <h4 className="mb-3">Customer reviews</h4>
+                            <h4 className='mb-3'>Customer reviews</h4>
                             <span>
                               {!isNaN(stars) && (
                                 <>
@@ -385,28 +418,28 @@ const ProductDetail = (props) => {
                                     (_, index) => (
                                       <i
                                         key={index}
-                                        className="bi bi-star-fill text-warning"
+                                        className='bi bi-star-fill text-warning'
                                       ></i>
                                     )
                                   )}
                                   {stars % 1 !== 0 && (
                                     <i
                                       key={Math.floor(stars) + "-half"}
-                                      className="bi bi-star-half text-warning"
+                                      className='bi bi-star-half text-warning'
                                     ></i>
                                   )}
                                   {[...Array(5 - Math.ceil(stars))].map(
                                     (_, index) => (
                                       <i
                                         key={Math.ceil(stars) + index}
-                                        className="bi bi-star text-warning"
+                                        className='bi bi-star text-warning'
                                       ></i>
                                     )
                                   )}
                                 </>
                               )}
 
-                              <small className="ms-3">
+                              <small className='ms-3'>
                                 {product.nbReviewers} global ratings
                               </small>
                             </span>
@@ -465,15 +498,15 @@ const ProductDetail = (props) => {
                         </div>
                       </div>
                       {/* col */}
-                      <div className="col-md-8">
-                        <div className="mb-10">
-                          <div className="d-flex justify-content-between align-items-center mb-8">
+                      <div className='col-md-8'>
+                        <div className='mb-10'>
+                          <div className='d-flex justify-content-between align-items-center mb-8'>
                             <div>
                               {/* heading */}
                               <h4>Reviews</h4>
                             </div>
                             <div>
-                              <select className="form-select">
+                              <select className='form-select'>
                                 <option defaultValue>Top Review</option>
                                 <option value={1}>One</option>
                                 <option value={2}>Two</option>
@@ -484,21 +517,21 @@ const ProductDetail = (props) => {
 
                           {reviews.slice(0, seeMore).map((reviews, index) => (
                             <div
-                              className="d-flex border-bottom pb-6 mb-6 pt-4"
+                              className='d-flex border-bottom pb-6 mb-6 pt-4'
                               key={index}
                             >
                               {/* img */}
                               <img
                                 src={`http://localhost:5001/uploads/${reviews.image}`}
-                                alt=""
-                                className="rounded-circle avatar-lg"
+                                alt=''
+                                className='rounded-circle avatar-lg'
                               />
-                              <div className="ms-5">
-                                <h6 className="mb-1">{reviews.username}</h6>
+                              <div className='ms-5'>
+                                <h6 className='mb-1'>{reviews.username}</h6>
                                 {/* content */}
-                                <p className="small">
+                                <p className='small'>
                                   {" "}
-                                  <span className="text-muted">
+                                  <span className='text-muted'>
                                     {new Date(reviews.createdAt).toLocaleString(
                                       "en-GB",
                                       {
@@ -512,12 +545,12 @@ const ProductDetail = (props) => {
                                   </span>
                                 </p>
                                 {/* rating */}
-                                <div className=" mb-2">
+                                <div className=' mb-2'>
                                   {[...Array(Math.floor(reviews.rating))].map(
                                     (_, index) => (
                                       <i
                                         key={index}
-                                        className="bi bi-star-fill text-warning"
+                                        className='bi bi-star-fill text-warning'
                                       ></i>
                                     )
                                   )}
@@ -526,11 +559,11 @@ const ProductDetail = (props) => {
                                   ].map((_, index) => (
                                     <i
                                       key={Math.floor(reviews.rating) + index}
-                                      className="bi bi-star text-warning"
+                                      className='bi bi-star text-warning'
                                     ></i>
                                   ))}
 
-                                  <span className="ms-3 text-dark fw-bold">
+                                  <span className='ms-3 text-dark fw-bold'>
                                     {reviews.headline}
                                   </span>
                                 </div>
@@ -541,7 +574,7 @@ const ProductDetail = (props) => {
                           {reviews.length > seeMore && (
                             <div>
                               <a
-                                className="btn btn-outline-gray-400 text-muted"
+                                className='btn btn-outline-gray-400 text-muted'
                                 onClick={handleSeeMore}
                               >
                                 Read More Reviews
@@ -552,12 +585,12 @@ const ProductDetail = (props) => {
                         <div>
                           {/* rating */}
 
-                          <h3 className="mb-5" id="myDiv">
+                          <h3 className='mb-5' id='myDiv'>
                             Create Review
                           </h3>
-                          <div className="border-bottom py-4 mb-4">
-                            <h4 className="mb-3">Overall rating*</h4>
-                            <div id="rater" />
+                          <div className='border-bottom py-4 mb-4'>
+                            <h4 className='mb-3'>Overall rating*</h4>
+                            <div id='rater' />
                             <Rating
                               onClick={handleRating}
                               ratingValue={ratingValue}
@@ -580,39 +613,39 @@ const ProductDetail = (props) => {
                           </div>
 
                           {/* form control */}
-                          <form id="myForm">
-                            <div className="border-bottom py-4 mb-4">
+                          <form id='myForm'>
+                            <div className='border-bottom py-4 mb-4'>
                               <h5>Add a headline*</h5>
                               <input
-                                type="text"
-                                className="form-control"
-                                placeholder="What’s most important to know"
+                                type='text'
+                                className='form-control'
+                                placeholder='What’s most important to know'
                                 onChange={(e) => setHeadline(e.target.value)}
                               />
                             </div>
 
-                            <div className=" py-4 mb-4">
+                            <div className=' py-4 mb-4'>
                               {/* heading */}
                               <h5>Add a written review*</h5>
                               <textarea
-                                className="form-control"
+                                className='form-control'
                                 rows={3}
-                                placeholder="What did you like or dislike? What did you use this product for?"
+                                placeholder='What did you like or dislike? What did you use this product for?'
                                 onChange={(e) =>
                                   setReviewMessage(e.target.value)
                                 }
                               />
                             </div>
                             {error && (
-                              <div className="alert alert-danger" role="alert">
+                              <div className='alert alert-danger' role='alert'>
                                 {error}
                               </div>
                             )}
                             {/* button */}
-                            <div className="d-flex justify-content-end">
+                            <div className='d-flex justify-content-end'>
                               <a
-                                type="button"
-                                className="btn btn-primary"
+                                type='button'
+                                className='btn btn-primary'
                                 onClick={addReview}
                               >
                                 Submit Review
@@ -627,10 +660,10 @@ const ProductDetail = (props) => {
                 {/* tab pane */}
 
                 <div
-                  className="tab-pane fade"
-                  id="sellerInfo-tab-pane"
-                  role="tabpanel"
-                  aria-labelledby="sellerInfo-tab"
+                  className='tab-pane fade'
+                  id='sellerInfo-tab-pane'
+                  role='tabpanel'
+                  aria-labelledby='sellerInfo-tab'
                   tabIndex={0}
                 >
                   ...

@@ -4,9 +4,10 @@ import { useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
 import { notify } from "../../../utils/HelperFunction";
-
+import ConfirmationModal from "../../../components/commun/modals/login/ConfirmationModal";
 const Coupons = (props) => {
   const navigate = useNavigate();
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
 
   const [allCoupons, setAllCoupons] = useState([]);
     //search 
@@ -41,7 +42,14 @@ const Coupons = (props) => {
       navigate("/dashboard/editCoupon", { state: { id } });
     }
   };
-
+  const handleDeleteCoupon = (coupon) => {
+    setCouponToDelete(coupon);
+    setShowConfirmationModal(true);
+  };
+  const handleConfirmDelete = () => {
+    deleteCoupon(couponToDelete._id);
+    setShowConfirmationModal(false);
+  };
   const deleteCoupon = (id) => {
     axios
       .post(`http://localhost:5000/orders/deleteCoupon`, {
@@ -57,6 +65,12 @@ const Coupons = (props) => {
 
   return (
     <>
+       <ConfirmationModal
+        message="Are you sure you want to delete this item?"
+        show={showConfirmationModal}
+        onHide={() => setShowConfirmationModal(false)}
+        onConfirm={handleConfirmDelete}
+      />
       <main className="main-content-wrapper">
         <div className="container">
           <div className="row mb-8">
@@ -230,7 +244,9 @@ const Coupons = (props) => {
                                     </a>
                                     <ul className="dropdown-menu">
                                       <li
-                                        onClick={() => deleteCoupon(coupon._id)}
+                                        onClick={() =>
+                                          handleDeleteCoupon(coupon)
+                                        }
                                       >
                                         <a className="dropdown-item">
                                           <i className="bi bi-trash me-3" />
@@ -249,6 +265,7 @@ const Coupons = (props) => {
                                           Edit
                                         </a>
                                       </li>
+                                    
                                     </ul>
                                   </div>
                                 </td>

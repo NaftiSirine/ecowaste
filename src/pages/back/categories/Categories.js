@@ -2,13 +2,16 @@
 import { Link, useNavigate  } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
-
+import ConfirmationModal from "../../../components/commun/modals/login/ConfirmationModal";
 const Categories = (props) => {
   const navigate = useNavigate();
   const [allCategories, setAllCategories] = useState([]);
   const [searchQueryByCategoryName, setsearchQueryByCategoryName] = useState("");
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState(null);
   const [seeMore, setSeeMore] = useState(5);
   // Pagination state
+  
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(4);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -49,12 +52,26 @@ const Categories = (props) => {
         })
         .catch((err) => console.log(err));
   }
+  const handleDeleteItem = (category) => {
+    setItemToDelete(category);
+    setShowConfirmationModal(true);
+  };
+  const handleConfirmDelete = () => {
+    deleteCategory(itemToDelete._id);
+    setShowConfirmationModal(false);
+  };
 
 
   return (
     <>
 
 <main className="main-content-wrapper">
+<ConfirmationModal
+        message="Are you sure you want to delete this item?"
+        show={showConfirmationModal}
+        onHide={() => setShowConfirmationModal(false)}
+        onConfirm={handleConfirmDelete}
+      />
         <div className="container">
           {/* row */}
           <div className="row mb-8">
@@ -123,24 +140,51 @@ const Categories = (props) => {
                                   <a href="#" className="text-reset" data-bs-toggle="dropdown" aria-expanded="false">
                                   <i class="feather-icon icon-more-vertical"/>
                                   </a>
-                                  <ul className="dropdown-menu">
-                                    <li>
-                                      <a style={{cursor:"pointer"}} className="dropdown-item" onClick={() => deleteCategory(category._id)}><i className="bi bi-trash me-3" />
-                                      Delete
-                                      </a>
-                                    </li>
-                                    <li>
-                                      <a style={{cursor:"pointer"}} className="dropdown-item" onClick={() => editCategory(category._id)}><i className="bi bi-pencil-square me-3 " />
-                                      Edit
-                                      </a>
-                                    </li>
-                                  </ul>
-                                </div>
-                              </td>
-                            </tr>
-                          );
-                        })}
-                        
+                                </td>
+                                <td>
+                                  <a className="text-reset">{category.label}</a>
+                                </td>
+                                <td>
+                                  <div className="dropdown">
+                                    <a
+                                      href="#"
+                                      className="text-reset"
+                                      data-bs-toggle="dropdown"
+                                      aria-expanded="false"
+                                    >
+                                      <i class="feather-icon icon-more-vertical" />
+                                    </a>
+                                    <ul className="dropdown-menu">
+                                      <li>
+                                        <a
+                                          style={{ cursor: "pointer" }}
+                                          className="dropdown-item"
+                                          onClick={() =>
+                                            handleDeleteItem(category)
+                                          }
+                                        >
+                                          <i className="bi bi-trash me-3" />
+                                          Delete
+                                        </a>
+                                      </li>
+                                      <li>
+                                        <a
+                                          style={{ cursor: "pointer" }}
+                                          className="dropdown-item"
+                                          onClick={() =>
+                                            editCategory(category._id)
+                                          }
+                                        >
+                                          <i className="bi bi-pencil-square me-3 " />
+                                          Edit
+                                        </a>
+                                      </li>
+                                    </ul>
+                                  </div>
+                                </td>
+                              </tr>
+                            );
+                          })}
                       </tbody>
                       <tfoot>
                             <tr>

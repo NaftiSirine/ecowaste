@@ -342,7 +342,9 @@ export const refreshUser = (id) => (dispatch, getState) => {
       console.log(data);
       dispatch({
         type: REFRESH_USER_SUCCESS,
-        payload: { user: { ...currentUser, cart: data.cart } },
+        payload: {
+          user: { ...currentUser, cart: data.cart, wishlist: data.wishlist },
+        },
       });
 
       return Promise.resolve(data);
