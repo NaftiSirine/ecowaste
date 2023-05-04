@@ -4,17 +4,40 @@ import { useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
 import { notify } from "../../../utils/HelperFunction";
+import ConfirmationModal from "../../../components/commun/modals/login/ConfirmationModal";
 
 const Products = (props) => {
   const navigate = useNavigate();
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState(null);
 
   const [allProducts, setAllProducts] = useState([]);
   const [searchQueryByProductname, setSearchQueryByProductname] = useState("");
   const [searchQueryByStock, setSearchQueryByStock] = useState("");
   const [stock, setStock] = useState("");
+  //search
+  const [searchQuery, setSearchQuery] = useState("");
+
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(5);
+  //sorting
+  const [sortOrder, setSortOrder] = useState({
+    code: "asc",
+    name: "asc",
+    category: "asc",
+  });
+  const handleSort = (field) => {
+    setSortOrder((prevSortOrder) => ({
+      ...prevSortOrder,
+      [field]: prevSortOrder[field] === "asc" ? "desc" : "asc",
+    }));
+  };
+  function handleItemsPerPageChange(event) {
+    setItemsPerPage(parseInt(event.target.value));
+    setCurrentPage(1);
+  }
+
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
 
@@ -82,9 +105,53 @@ const Products = (props) => {
       })
       .catch((err) => console.log(err));
   };
+  const sortedProducts = [...allProducts].sort((a, b) => {
+    let codeComparison = 0;
+    if (typeof a.code === "string" && typeof b.code === "string") {
+      codeComparison = a.code.localeCompare(b.code);
+    } else {
+      codeComparison = a.code < b.code ? -1 : 1;
+    }
+
+    let nameComparison = 0;
+    if (typeof a.name === "string" && typeof b.name === "string") {
+      nameComparison = a.name.localeCompare(b.name);
+    } else {
+      nameComparison = a.name < b.name ? -1 : 1;
+    }
+
+    if (sortOrder.code === "asc") {
+      if (codeComparison !== 0) {
+        return codeComparison;
+      } else {
+        return nameComparison;
+      }
+    } else {
+      if (codeComparison !== 0) {
+        return -codeComparison;
+      } else {
+        return -nameComparison;
+      }
+    }
+  });
+
+  const handleDeleteItem = (product) => {
+    setItemToDelete(product);
+    setShowConfirmationModal(true);
+  };
+  const handleConfirmDelete = () => {
+    deleteProduct(itemToDelete._id);
+    setShowConfirmationModal(false);
+  };
 
   return (
     <>
+      <ConfirmationModal
+        message="Are you sure you want to delete this item?"
+        show={showConfirmationModal}
+        onHide={() => setShowConfirmationModal(false)}
+        onConfirm={handleConfirmDelete}
+      />
       <main className="main-content-wrapper">
         <div className="container">
           <div className="row mb-8">
@@ -117,12 +184,10 @@ const Products = (props) => {
                         <input
                           className="form-control"
                           type="search"
-                          placeholder="Search Customers"
+                          placeholder="Search Products"
                           aria-label="Search"
-                          value={searchQueryByProductname}
-                          onChange={(e) =>
-                            setSearchQueryByProductname(e.target.value)
-                          }
+                          value={searchQuery}
+                          onChange={(e) => setSearchQuery(e.target.value)}
                         />
                       </form>
                     </div>
@@ -148,11 +213,40 @@ const Products = (props) => {
                       <thead className="bg-light">
                         <tr>
                           <th>Image</th>
-                          <th className="column disposable">Code</th>
-                          <th className="column">Product Name</th>
-                          <th className="column disposable disposable2">
-                            Category
+                          <th
+                            onClick={() => handleSort("code")}
+                            className="column disposable"
+                          >
+                            Code{" "}
+                            {sortOrder.code === "asc" ? (
+                              <i className="fa fa-sort-alpha-down"></i>
+                            ) : (
+                              <i className="fa fa-sort-alpha-up"></i>
+                            )}
                           </th>
+                          <th
+                            onClick={() => handleSort("name")}
+                            className="column"
+                          >
+                            Product Name{" "}
+                            {sortOrder.name === "asc" ? (
+                              <i className="fa fa-sort-alpha-down"></i>
+                            ) : (
+                              <i className="fa fa-sort-alpha-up"></i>
+                            )}
+                          </th>
+                          <th
+                            onClick={() => handleSort("category")}
+                            className="column disposable disposable2"
+                          >
+                            Category{" "}
+                            {sortOrder.category === "asc" ? (
+                              <i className="fa fa-sort-alpha-down"></i>
+                            ) : (
+                              <i className="fa fa-sort-alpha-up"></i>
+                            )}
+                          </th>
+
                           <th className="column disposable">Stock</th>
                           <th className="column disposable disposable2">
                             Quantity
@@ -170,8 +264,14 @@ const Products = (props) => {
                         </tr>
                       </thead>
                       <tbody>
-                        {allProducts
-                          ?.slice(startIndex, endIndex)
+                        {sortedProducts
+                          ?.filter((product) =>
+                            Object.values(product)
+                              .join("")
+                              .toLowerCase()
+                              .includes(searchQuery)
+                          )
+                          .slice(startIndex, endIndex)
                           .map((product, index) => {
                             return (
                               <tr key={index}>
@@ -192,7 +292,6 @@ const Products = (props) => {
                                     {product.name}
                                   </a>
                                 </td>
-
                                 <td className="column disposable disposable2">
                                   {product.category.label}
                                 </td>
@@ -237,7 +336,7 @@ const Products = (props) => {
                                   ).toLocaleDateString()}
                                 </td>
                                 <td
-                                  className="column "
+                                  className="column justify-content-center"
                                   style={{
                                     display: "flex",
                                     alignItems: "center",
@@ -253,7 +352,7 @@ const Products = (props) => {
                                     >
                                       <i className="feather-icon icon-eye fs-5" />
                                     </a>
-                                    <ul className="dropdown-menu dropdownForcedAttributes" >
+                                    <ul className="dropdown-menu dropdownForcedAttributes">
                                       <li className="line eye-field">
                                         <a className="dropdown-item">
                                           <span className="">Code :</span>#
@@ -310,7 +409,10 @@ const Products = (props) => {
                                           {product.reduction}
                                         </a>
                                       </li>
-                                      <li className="line eye-field eye-field2" style={{borderBottom:"none"}}> 
+                                      <li
+                                        className="line eye-field eye-field2"
+                                        style={{ borderBottom: "none" }}
+                                      >
                                         <a className="dropdown-item">
                                           <span className="">Created at :</span>
                                           {new Date(
@@ -332,7 +434,7 @@ const Products = (props) => {
                                     <ul className="dropdown-menu">
                                       <li
                                         onClick={() =>
-                                          deleteProduct(product._id)
+                                          handleDeleteItem(product)
                                         }
                                       >
                                         <a className="dropdown-item">
@@ -366,6 +468,21 @@ const Products = (props) => {
                                 Showing{" "}
                                 {Math.min(itemsPerPage, allProducts.length)} of{" "}
                                 {allProducts.length} products
+                              </div>
+                              <div>
+                                <div className="d-flex justify-content-between align-items-center">
+                                  <label htmlFor="items-per-page">
+                                    Items per page :
+                                  </label>
+
+                                  <input
+                                    type="number"
+                                    className="form-control"
+                                    id="items-per-page"
+                                    value={itemsPerPage}
+                                    onChange={handleItemsPerPageChange}
+                                  />
+                                </div>
                               </div>
                               <div>
                                 <nav aria-label="Page navigation">

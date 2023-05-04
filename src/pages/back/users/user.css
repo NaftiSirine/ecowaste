@@ -1,0 +1,43 @@
+
+.eye-field {
+    display: none;
+}
+.eye-field2 {
+    display: none;
+}
+
+@media (max-width: 1290px) {
+    .disposable2 {
+        display:none;
+    }
+    .eye-field2 {
+        display: block;
+    }
+}
+@media (max-width: 767px) {
+    .disposable {
+        display:none;
+    }
+    .eye-field {
+        display: block;
+    }
+}
+
+.line{
+    border-bottom: 1px rgb(224, 224, 224) solid;
+    font-size: 14px;
+    padding: 7px;
+}
+.line span{
+    color: #597483;
+    padding-right: 6px;
+}
+
+/*
+.dropdownForcedAttributes{
+    position: absolute !important;
+    inset: 0px 0px auto auto !important;
+    margin: 0px !important;
+}
+*/
+

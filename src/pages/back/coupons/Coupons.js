@@ -4,43 +4,37 @@ import { useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
 import { notify } from "../../../utils/HelperFunction";
-
+import ConfirmationModal from "../../../components/commun/modals/login/ConfirmationModal";
 const Coupons = (props) => {
   const navigate = useNavigate();
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
 
   const [allCoupons, setAllCoupons] = useState([]);
-  const [searchQueryByCouponCode, setSearchQueryByCouponCode] = useState("");
-
+  //search
+  const [searchQuery, setSearchQuery] = useState("");
   const [stock, setStock] = useState("");
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(5);
+  const [couponToDelete, setCouponToDelete] = useState(null);
+  function handleItemsPerPageChange(event) {
+    setItemsPerPage(parseInt(event.target.value));
+    setCurrentPage(1);
+  }
+
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
 
   useEffect(() => {
-    const searchObject = { name: searchQueryByCouponCode };
-    const sObject = { inStock: stock };
-    if (searchQueryByCouponCode?.length > 0) {
-      axios
-        .post("http://localhost:5000/orders/searchCouponByCode", {
-          code: searchObject.name,
-        })
-        .then((res) => {
-          setAllCoupons(res.data);
-        })
-        .catch((err) => console.log(err));
-    } else {
-      axios
-        .get("http://localhost:5000/orders/getAllCoupons")
-        .then((res) => {
-          setAllCoupons(res.data);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    }
-  }, [searchQueryByCouponCode, currentPage, itemsPerPage]);
+    axios
+      .get("http://localhost:5000/orders/getAllCoupons")
+      .then((res) => {
+        setAllCoupons(res.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [currentPage, itemsPerPage]);
 
   const editProduct = (id) => {
     if (id) {
@@ -48,7 +42,14 @@ const Coupons = (props) => {
       navigate("/dashboard/editCoupon", { state: { id } });
     }
   };
-
+  const handleDeleteCoupon = (coupon) => {
+    setCouponToDelete(coupon);
+    setShowConfirmationModal(true);
+  };
+  const handleConfirmDelete = () => {
+    deleteCoupon(couponToDelete._id);
+    setShowConfirmationModal(false);
+  };
   const deleteCoupon = (id) => {
     axios
       .post(`http://localhost:5000/orders/deleteCoupon`, {
@@ -64,6 +65,12 @@ const Coupons = (props) => {
 
   return (
     <>
+      <ConfirmationModal
+        message="Are you sure you want to delete this item?"
+        show={showConfirmationModal}
+        onHide={() => setShowConfirmationModal(false)}
+        onConfirm={handleConfirmDelete}
+      />
       <main className="main-content-wrapper">
         <div className="container">
           <div className="row mb-8">
@@ -98,10 +105,8 @@ const Coupons = (props) => {
                           type="search"
                           placeholder="Search Coupons"
                           aria-label="Search"
-                          value={searchQueryByCouponCode}
-                          onChange={(e) =>
-                            setSearchQueryByCouponCode(e.target.value)
-                          }
+                          value={searchQuery}
+                          onChange={(e) => setSearchQuery(e.target.value)}
                         />
                       </form>
                     </div>
@@ -124,18 +129,22 @@ const Coupons = (props) => {
                           <th className="column disposable disposable2">
                             Used Times
                           </th>
-                          <th className="column disposable">Expiration Date</th>
+                          <th className="column disposable disposable2">Expiration Date</th>
                           <th className="column disposable disposable2">
                             Update Date
                           </th>
-                          <th className="column">
-                            Action
-                          </th>
+                          <th className="column">Action</th>
                         </tr>
                       </thead>
                       <tbody>
                         {allCoupons
-                          ?.slice(startIndex, endIndex)
+                          ?.filter((coupon) =>
+                            Object.values(coupon)
+                              .join("")
+                              .toLowerCase()
+                              .includes(searchQuery)
+                          )
+                          .slice(startIndex, endIndex)
                           .map((coupon, index) => {
                             return (
                               <tr key={index}>
@@ -145,7 +154,6 @@ const Coupons = (props) => {
                                     {coupon.discount}
                                   </a>
                                 </td>
-
                                 <td className="column disposable disposable2">
                                   {coupon.maxUses}
                                 </td>
@@ -159,13 +167,14 @@ const Coupons = (props) => {
                                     coupon.expiresAt
                                   ).toLocaleDateString()}
                                 </td>
+
                                 <td className="column disposable disposable2">
                                   {new Date(
                                     coupon.updatedAt
                                   ).toLocaleDateString()}
                                 </td>
                                 <td
-                                  className="column "
+                                  className="column justify-content-center"
                                   style={{
                                     display: "flex",
                                     alignItems: "center",
@@ -202,13 +211,18 @@ const Coupons = (props) => {
                                       </li>
                                       <li className="line eye-field eye-field2">
                                         <a className="dropdown-item">
-                                          <span className="">Expiration Date :</span>
+                                          <span className="">
+                                            Expiration Date :
+                                          </span>
                                           {new Date(
                                             coupon.expiresAt
                                           ).toLocaleDateString()}
                                         </a>
                                       </li>
-                                      <li className="line eye-field eye-field2" style={{ borderBottom: "none" }}>
+                                      <li
+                                        className="line eye-field eye-field2"
+                                        style={{ borderBottom: "none" }}
+                                      >
                                         <a className="dropdown-item">
                                           <span className="">
                                             Update Date :
@@ -231,7 +245,9 @@ const Coupons = (props) => {
                                     </a>
                                     <ul className="dropdown-menu">
                                       <li
-                                        onClick={() => deleteCoupon(coupon._id)}
+                                        onClick={() =>
+                                          handleDeleteCoupon(coupon)
+                                        }
                                       >
                                         <a className="dropdown-item">
                                           <i className="bi bi-trash me-3" />
@@ -264,7 +280,22 @@ const Coupons = (props) => {
                               <div>
                                 Showing{" "}
                                 {Math.min(itemsPerPage, allCoupons.length)} of{" "}
-                                {allCoupons.length} Coupons
+                                {allCoupons.length} products
+                              </div>
+                              <div>
+                                <div className="d-flex justify-content-between align-items-center">
+                                  <label htmlFor="items-per-page">
+                                    Items per page:
+                                  </label>
+
+                                  <input
+                                    type="number"
+                                    className="form-control"
+                                    id="items-per-page"
+                                    value={itemsPerPage}
+                                    onChange={handleItemsPerPageChange}
+                                  />
+                                </div>
                               </div>
                               <div>
                                 <nav aria-label="Page navigation">

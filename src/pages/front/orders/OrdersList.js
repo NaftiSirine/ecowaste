@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 import { useSelector } from "react-redux";
+import Payment from "./Payment";
 
 const OrdersList = () => {
   const [allOrders, setAllOrders] = useState([]);
@@ -81,7 +82,20 @@ const OrdersList = () => {
                       >
                         <i className="feather-icon icon-eye" />
                       </a>
-                    </Link>
+                      </Link>
+                      <span
+                        style={{ marginLeft: "20px", marginRight: "-20px" }}
+                        className="dropdown btn btn-primary btn-sm"
+                      >
+                        <i
+                          style={{ marginRight: "6px" }}
+                          class="bi bi-credit-card-fill"
+                        ></i>{" "}
+                        <a data-bs-toggle="dropdown">Pay</a>
+                        <div style={{    border:" 1px solid rgb(76, 196, 36)",borderRadius: "10px"}} className="dropdown-menu dropdownForcedAttributes">
+                          <Payment></Payment>
+                        </div>
+                      </span>
                   </td>
                 </tr>
               );

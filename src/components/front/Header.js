@@ -42,13 +42,10 @@ function Navbar() {
                 </Link>
               </a>
               <div className='d-flex justify-content-between w-100 d-lg-none'>
-                
-
                 <div className='d-flex align-items-center lh-1'>
                   <div className='list-inline me-4'>
                     <div className='list-inline-item'>
                       <a
-                        
                         className='text-muted'
                         data-bs-toggle='modal'
                         data-bs-target='#userModal'
@@ -173,10 +170,7 @@ function Navbar() {
             <div className='col-md-2 col-xxl-1 text-end d-none d-lg-block'>
               <div className='list-inline'>
                 <div className='list-inline-item'>
-                  <a
-                    href='pages/shop-wishlist.html'
-                    className='text-muted position-relative'
-                  >
+                  <Link to='/wishlist' className='text-muted position-relative'>
                     <svg
                       xmlns='http://www.w3.org/2000/svg'
                       width='20'
@@ -191,10 +185,13 @@ function Navbar() {
                     >
                       <path d='M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z'></path>
                     </svg>
-                    <span className='position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success'>
-                      5<span className='visually-hidden'>unread messages</span>
-                    </span>
-                  </a>
+                    {currentUser && (
+                      <span className='position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success'>
+                        {currentUser?.wishlist?.length}
+                        {/* <span className="">unread messages</span> */}
+                      </span>
+                    )}
+                  </Link>
                 </div>
                 <div className='list-inline-item'>
                   <a
@@ -272,6 +269,7 @@ function Navbar() {
                       <li>
                         <a className='dropdown-item'>Home</a>
                       </li>
+
                       </Link>
                       <li>
                         <a className='dropdown-item'>Profile</a>
@@ -432,7 +430,7 @@ function Navbar() {
                 <li className='nav-item dropdown'>
                   <a
                     className='nav-link '
-                     
+                    
                     role='button'
                     data-bs-toggle='dropdown'
                     aria-expanded='false'
@@ -446,7 +444,7 @@ function Navbar() {
                 <li className='nav-item dropdown'>
                   <a
                     className='nav-link '
-                     
+                    
                     role='button'
                     data-bs-toggle='dropdown'
                     aria-expanded='false'
@@ -475,7 +473,6 @@ function Navbar() {
                 <li className='nav-item dropdown'>
                   <a
                     className='nav-link dropdown-toggle'
-                     
                     role='button'
                     data-bs-toggle='dropdown'
                     aria-expanded='false'
@@ -498,6 +495,7 @@ function Navbar() {
                       </>
                     )}
                     <li className='dropdown-submenu dropend'>
+
                       <a
                         className='dropdown-item dropdown-list-group-item dropdown-toggle'
                          
@@ -548,7 +546,6 @@ function Navbar() {
                 <li className='nav-item dropdown dropdown-flyout'>
                   <a
                     className='nav-link'
-                     
                     id='navbarDropdownDocs'
                     role='button'
                     data-bs-toggle='dropdown'

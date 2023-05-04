@@ -8,10 +8,19 @@ import { useSelector } from "react-redux";
 const Orders = () => {
   const [allOrders, setAllOrders] = useState([]);
   const { user: currentUser } = useSelector((state) => state.auth);
+  // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(5);
+
+  function handleItemsPerPageChange(event) {
+    setItemsPerPage(parseInt(event.target.value));
+    setCurrentPage(1);
+  }
+
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
+    //search 
+    const [searchQuery, setSearchQuery] = useState('');
   useEffect(() => {
     axios
       .get("http://localhost:5000/orders/getAllOrders")
@@ -43,7 +52,23 @@ const Orders = () => {
             {/* card */}
             <div className="card h-100 card-lg">
               <div className=" p-6 ">
-                <div className="row justify-content-between"></div>
+                <div className="row justify-content-between">
+                                      {/* form */}
+                                      <div className="col-lg-4 col-md-6 col-12 mb-2 mb-lg-0">
+                      <form className="d-flex" role="search">
+                        <input
+                          className="form-control"
+                          type="search"
+                          placeholder="Search Orders"
+                          aria-label="Search"
+                          value={searchQuery}
+                          onChange={(e) =>
+                            setSearchQuery(e.target.value)
+                          }
+                        />
+                      </form>
+                    </div>
+                </div>
               </div>
               {/* card body */}
               <div className="card-body p-0">
@@ -62,10 +87,16 @@ const Orders = () => {
                     </thead>
                     <tbody>
                       {allOrders
-                        ?.slice(startIndex, endIndex)
+                        ?.filter((order) =>
+                        Object.values(order)
+                          .join(' ')
+                          .toLowerCase()
+                          .includes(searchQuery)
+                      ).slice(startIndex, endIndex)
                         .map((order, index) => {
                           return (
                             <tr key={index}>
+
                               <td className="column">{currentUser.username}</td>
 
                               <td className="column disposable">
@@ -83,7 +114,7 @@ const Orders = () => {
                                 {order.totalAmount} DT
                               </td>
                               <td
-                                className="column "
+                                className="column justify-content-center"
                                 style={{
                                   display: "flex",
                                   alignItems: "center",
@@ -146,64 +177,102 @@ const Orders = () => {
                           );
                         })}
                     </tbody>
+                    <tfoot>
+                      <tr>
+                        <td colSpan="10">
+                          <div className="d-flex justify-content-between align-items-center">
+                            <div>
+                              Showing {Math.min(itemsPerPage, allOrders.length)}{" "}
+                              of {allOrders.length} products
+                            </div>
+                            <div>
+                              <div className="d-flex justify-content-between align-items-center">
+                                <label htmlFor="items-per-page">
+                                  Items per page:
+                                </label>
+
+                                <input
+                                  type="number"
+                                  className="form-control"
+                                  id="items-per-page"
+                                  value={itemsPerPage}
+                                  onChange={handleItemsPerPageChange}
+                                />
+                              </div>
+                            </div>
+                            <div>
+                              <nav aria-label="Page navigation">
+                                <ul className="pagination">
+                                  {startIndex > 1 && (
+                                    <li className="page-item ">
+                                      <a
+                                        className="page-link "
+                                        onClick={() =>
+                                          setCurrentPage(currentPage - 1)
+                                        }
+                                      >
+                                        Previous
+                                      </a>
+                                    </li>
+                                  )}
+                                  {currentPage === 1 && (
+                                    <li className="page-item disabled">
+                                      <a className="page-link ">Previous</a>
+                                    </li>
+                                  )}
+                                  {Array.from(
+                                    {
+                                      length: Math.ceil(
+                                        allOrders.length / itemsPerPage
+                                      ),
+                                    },
+                                    (_, i) => (
+                                      <li
+                                        key={i}
+                                        className={`page-item ${
+                                          i + 1 === currentPage ? "active" : ""
+                                        }`}
+                                        onClick={() => setCurrentPage(i + 1)}
+                                      >
+                                        <span className="page-link">
+                                          {i + 1}
+                                        </span>
+                                      </li>
+                                    )
+                                  )}
+                                  {endIndex < allOrders.length && (
+                                    <li className="page-item">
+                                      <a
+                                        className="page-link"
+                                        onClick={() =>
+                                          setCurrentPage(currentPage + 1)
+                                        }
+                                      >
+                                        Next
+                                      </a>
+                                    </li>
+                                  )}
+                                  {endIndex >= allOrders.length && (
+                                    <li className="page-item disabled">
+                                      <a
+                                        className="page-link"
+                                        onClick={() =>
+                                          setCurrentPage(currentPage + 1)
+                                        }
+                                      >
+                                        Next
+                                      </a>
+                                    </li>
+                                  )}
+                                </ul>
+                              </nav>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    </tfoot>
                   </table>
                 </div>
-              </div>
-              <div className="border-top d-md-flex justify-content-between align-items-center p-6">
-                <span>Orders: {allOrders.length}</span>
-                <nav aria-label="Page navigation">
-                  <ul className="pagination">
-                    {startIndex > 1 && (
-                      <li className="page-item ">
-                        <a
-                          className="page-link "
-                          onClick={() => setCurrentPage(currentPage - 1)}
-                        >
-                          Previous
-                        </a>
-                      </li>
-                    )}
-                    {currentPage === 1 && (
-                      <li className="page-item disabled">
-                        <a className="page-link ">Previous</a>
-                      </li>
-                    )}
-                    {Array.from(
-                      { length: Math.ceil(allOrders.length / itemsPerPage) },
-                      (_, i) => (
-                        <li
-                          key={i}
-                          className={`page-item ${
-                            i + 1 === currentPage ? "active" : ""
-                          }`}
-                          onClick={() => setCurrentPage(i + 1)}
-                        >
-                          <span className="page-link">{i + 1}</span>
-                        </li>
-                      )
-                    )}
-                    {endIndex < allOrders.length && (
-                      <li className="page-item">
-                        <a
-                          className="page-link"
-                          onClick={() => setCurrentPage(currentPage + 1)}
-                        >
-                          Next
-                        </a>
-                      </li>
-                    )}
-                    {endIndex >= allOrders.length && (
-                      <li className="page-item disabled">
-                        <a
-                          className="page-link"
-                          onClick={() => setCurrentPage(currentPage + 1)}
-                        >
-                          Next
-                        </a>
-                      </li>
-                    )}
-                  </ul>
-                </nav>
               </div>
             </div>
           </div>
