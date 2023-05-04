@@ -15,7 +15,8 @@ function Stock() {
     setItemsPerPage(parseInt(event.target.value));
     setCurrentPage(1);
   }
-
+  //search
+  const [searchQuery, setSearchQuery] = useState("");
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const { id } = useParams();
@@ -99,6 +100,19 @@ function Stock() {
                 <div className="row justify-content-between">
                   {/* form */}
                   <div className="col-lg-4 col-md-6 col-12 mb-2 mb-lg-0">
+                    <form className="d-flex" role="search">
+                      <input
+                        className="form-control"
+                        type="search"
+                        placeholder="Search Products"
+                        aria-label="Search"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                      />
+                    </form>
+                  </div>
+                  {/* form */}
+                  <div className="col-lg-4 col-md-6 col-12 mb-2 mb-lg-0">
                     <a className="btn btn-primary" onClick={handleClick}>
                       Update the stock
                     </a>
@@ -173,7 +187,12 @@ function Stock() {
                       </tr>
                     </thead>
                     <tbody>
-                      {stockHistories
+                      {stockHistories?.filter((stock) =>
+                            Object.values(stock)
+                              .join("")
+                              .toLowerCase()
+                              .includes(searchQuery)
+                          )
                         .slice(startIndex, endIndex)
                         .map((stockHistories) => (
                           <tr key={stockHistories._id}>

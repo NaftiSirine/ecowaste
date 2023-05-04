@@ -10,13 +10,13 @@ const Coupons = (props) => {
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
 
   const [allCoupons, setAllCoupons] = useState([]);
-    //search 
-    const [searchQuery, setSearchQuery] = useState('');
+  //search
+  const [searchQuery, setSearchQuery] = useState("");
   const [stock, setStock] = useState("");
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(5);
-
+  const [couponToDelete, setCouponToDelete] = useState(null);
   function handleItemsPerPageChange(event) {
     setItemsPerPage(parseInt(event.target.value));
     setCurrentPage(1);
@@ -26,16 +26,16 @@ const Coupons = (props) => {
   const endIndex = startIndex + itemsPerPage;
 
   useEffect(() => {
-      axios
-        .get("http://localhost:5000/orders/getAllCoupons")
-        .then((res) => {
-          setAllCoupons(res.data);
-        })
-        .catch((error) => {
-          console.log(error);
-        });}
-   , [ currentPage, itemsPerPage]);
-      
+    axios
+      .get("http://localhost:5000/orders/getAllCoupons")
+      .then((res) => {
+        setAllCoupons(res.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [currentPage, itemsPerPage]);
+
   const editProduct = (id) => {
     if (id) {
       console.log(id);
@@ -65,7 +65,7 @@ const Coupons = (props) => {
 
   return (
     <>
-       <ConfirmationModal
+      <ConfirmationModal
         message="Are you sure you want to delete this item?"
         show={showConfirmationModal}
         onHide={() => setShowConfirmationModal(false)}
@@ -106,9 +106,7 @@ const Coupons = (props) => {
                           placeholder="Search Coupons"
                           aria-label="Search"
                           value={searchQuery}
-                          onChange={(e) =>
-                            setSearchQuery(e.target.value)
-                          }
+                          onChange={(e) => setSearchQuery(e.target.value)}
                         />
                       </form>
                     </div>
@@ -135,19 +133,18 @@ const Coupons = (props) => {
                           <th className="column disposable disposable2">
                             Update Date
                           </th>
-                          <th className="column">
-                            Action
-                          </th>
+                          <th className="column">Action</th>
                         </tr>
                       </thead>
                       <tbody>
                         {allCoupons
                           ?.filter((coupon) =>
-                          Object.values(coupon)
-                            .join('')
-                            .toLowerCase()
-                            .includes(searchQuery)
-                        ).slice(startIndex, endIndex)
+                            Object.values(coupon)
+                              .join("")
+                              .toLowerCase()
+                              .includes(searchQuery)
+                          )
+                          .slice(startIndex, endIndex)
                           .map((coupon, index) => {
                             return (
                               <tr key={index}>
@@ -172,7 +169,6 @@ const Coupons = (props) => {
                                 </td>
 
                                 <td className="column disposable disposable2">
-
                                   {new Date(
                                     coupon.updatedAt
                                   ).toLocaleDateString()}
@@ -215,13 +211,18 @@ const Coupons = (props) => {
                                       </li>
                                       <li className="line eye-field eye-field2">
                                         <a className="dropdown-item">
-                                          <span className="">Expiration Date :</span>
+                                          <span className="">
+                                            Expiration Date :
+                                          </span>
                                           {new Date(
                                             coupon.expiresAt
                                           ).toLocaleDateString()}
                                         </a>
                                       </li>
-                                      <li className="line eye-field eye-field2" style={{ borderBottom: "none" }}>
+                                      <li
+                                        className="line eye-field eye-field2"
+                                        style={{ borderBottom: "none" }}
+                                      >
                                         <a className="dropdown-item">
                                           <span className="">
                                             Update Date :
@@ -265,7 +266,6 @@ const Coupons = (props) => {
                                           Edit
                                         </a>
                                       </li>
-                                    
                                     </ul>
                                   </div>
                                 </td>

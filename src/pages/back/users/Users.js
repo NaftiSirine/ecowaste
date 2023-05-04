@@ -5,8 +5,8 @@ import { notify } from "../../../utils/HelperFunction";
 
 const Users = (props) => {
   const [allUsers, setAllUsers] = useState([]);
-      //search 
-      const [searchQuery, setSearchQuery] = useState('');
+  //search
+  const [searchQuery, setSearchQuery] = useState("");
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(5);
@@ -20,10 +20,9 @@ const Users = (props) => {
   const endIndex = startIndex + itemsPerPage;
 
   useEffect(() => {
-      axios.get("/api/auth/getAllUsers").then((res) => {
-        setAllUsers(res.data);
-      });
-    
+    axios.get("/api/auth/getAllUsers").then((res) => {
+      setAllUsers(res.data);
+    });
   }, []);
 
   const makeTechnical = (id) => {
@@ -80,9 +79,7 @@ const Users = (props) => {
                           placeholder="Search Customers"
                           aria-label="Search"
                           value={searchQuery}
-                          onChange={(e) =>
-                            setSearchQuery(e.target.value)
-                          }
+                          onChange={(e) => setSearchQuery(e.target.value)}
                         />
                       </form>
                     </div>
@@ -93,20 +90,6 @@ const Users = (props) => {
                     <table className="table table-centered table-hover table-borderless mb-0 table-with-checkbox text-nowrap">
                       <thead className="bg-light">
                         <tr>
-                          <th>
-                            <div className="form-check">
-                              <input
-                                className="form-check-input"
-                                type="checkbox"
-                                defaultValue
-                                id="checkAll"
-                              />
-                              <label
-                                className="form-check-label"
-                                htmlFor="checkAll"
-                              ></label>
-                            </div>
-                          </th>
                           <th>Full Name</th>
                           <th>Email</th>
                           <th>Verified</th>
@@ -117,28 +100,15 @@ const Users = (props) => {
                       <tbody>
                         {allUsers
                           ?.filter((user) =>
-                          Object.values(user)
-                            .join(' ')
-                            .toLowerCase()
-                            .includes(searchQuery)
-                        ).slice(startIndex, endIndex)
+                            Object.values(user)
+                              .join(" ")
+                              .toLowerCase()
+                              .includes(searchQuery)
+                          )
+                          .slice(startIndex, endIndex)
                           .map((user, index) => {
                             return (
                               <tr key={index}>
-                                <td>
-                                  <div className="form-check">
-                                    <input
-                                      className="form-check-input"
-                                      type="checkbox"
-                                      defaultValue
-                                      id="customerOne"
-                                    />
-                                    <label
-                                      className="form-check-label"
-                                      htmlFor="customerOne"
-                                    ></label>
-                                  </div>
-                                </td>
                                 <td>
                                   <div className="d-flex align-items-center">
                                     <img
