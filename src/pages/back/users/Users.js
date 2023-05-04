@@ -5,7 +5,8 @@ import { notify } from "../../../utils/HelperFunction";
 
 const Users = (props) => {
   const [allUsers, setAllUsers] = useState([]);
-  const [searchQueryByUsername, setSearchQueryByUsername] = useState("");
+      //search 
+      const [searchQuery, setSearchQuery] = useState('');
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(5);
@@ -19,21 +20,11 @@ const Users = (props) => {
   const endIndex = startIndex + itemsPerPage;
 
   useEffect(() => {
-    const searchObject = { username: searchQueryByUsername };
-    if (searchQueryByUsername?.length > 0) {
-      console.log("here");
-      axios
-        .post("/api/auth/searchUserByUsername", searchObject)
-        .then((res) => {
-          setAllUsers(res.data);
-        })
-        .catch((err) => console.log(err));
-    } else {
       axios.get("/api/auth/getAllUsers").then((res) => {
         setAllUsers(res.data);
       });
-    }
-  }, [searchQueryByUsername]);
+    
+  }, []);
 
   const makeTechnical = (id) => {
     axios
@@ -88,9 +79,9 @@ const Users = (props) => {
                           type="search"
                           placeholder="Search Customers"
                           aria-label="Search"
-                          value={searchQueryByUsername}
+                          value={searchQuery}
                           onChange={(e) =>
-                            setSearchQueryByUsername(e.target.value)
+                            setSearchQuery(e.target.value)
                           }
                         />
                       </form>
@@ -125,7 +116,12 @@ const Users = (props) => {
                       </thead>
                       <tbody>
                         {allUsers
-                          ?.slice(startIndex, endIndex)
+                          ?.filter((user) =>
+                          Object.values(user)
+                            .join(' ')
+                            .toLowerCase()
+                            .includes(searchQuery)
+                        ).slice(startIndex, endIndex)
                           .map((user, index) => {
                             return (
                               <tr key={index}>

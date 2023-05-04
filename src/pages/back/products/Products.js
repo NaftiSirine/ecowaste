@@ -143,6 +143,7 @@ const Products = (props) => {
   
   return (
     <>
+    
       <main className="main-content-wrapper">
         <div className="container">
           <div className="row mb-8">

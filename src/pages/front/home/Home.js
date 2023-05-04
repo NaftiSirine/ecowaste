@@ -1052,7 +1052,7 @@ function Home() {
                             <i className="bi bi-star-fill"></i>
                             <i className="bi bi-star-half"></i>
                           </small>{" "}
-                          <span className="text-muted small">4.5(149)</span>
+                          <span className="text-muted small">{product.stars}({product.nbReviewers})</span>
                         </div>
 
                         <div className="d-flex justify-content-between align-items-center mt-3">
@@ -1092,26 +1092,26 @@ function Home() {
                         </div>
                         <div class="d-flex justify-content-start text-center mt-3">
                           <div
-                            class="deals-countdown w-100"
+                            className="deals-countdown w-100"
                             id={`countdown-${index}`}
                           >
-                            <span class="countdown-section">
-                              <span class="countdown-amount hover-up days">
+                            <span className="countdown-section">
+                              <span className="countdown-amount hover-up days">
                                 {days}
                               </span>
-                              <span class="countdown-period"> days </span>
+                              <span className="countdown-period"> days </span>
                             </span>
-                            <span class="countdown-section">
-                              <span class="countdown-amount hover-up hours">
+                            <span className="countdown-section">
+                              <span className="countdown-amount hover-up hours">
                                 {hours}
                               </span>
-                              <span class="countdown-period"> hours </span>
+                              <span className="countdown-period"> hours </span>
                             </span>
-                            <span class="countdown-section">
-                              <span class="countdown-amount hover-up minutes">
+                            <span className="countdown-section">
+                              <span className="countdown-amount hover-up minutes">
                                 {minutes}
                               </span>
-                              <span class="countdown-period"> mins </span>
+                              <span className="countdown-period"> mins </span>
                             </span>
                           </div>
                         </div>

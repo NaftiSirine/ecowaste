@@ -19,6 +19,8 @@ const Orders = () => {
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
+    //search 
+    const [searchQuery, setSearchQuery] = useState('');
   useEffect(() => {
     axios
       .get("http://localhost:5000/orders/getAllOrders")
@@ -50,7 +52,23 @@ const Orders = () => {
             {/* card */}
             <div className="card h-100 card-lg">
               <div className=" p-6 ">
-                <div className="row justify-content-between"></div>
+                <div className="row justify-content-between">
+                                      {/* form */}
+                                      <div className="col-lg-4 col-md-6 col-12 mb-2 mb-lg-0">
+                      <form className="d-flex" role="search">
+                        <input
+                          className="form-control"
+                          type="search"
+                          placeholder="Search Orders"
+                          aria-label="Search"
+                          value={searchQuery}
+                          onChange={(e) =>
+                            setSearchQuery(e.target.value)
+                          }
+                        />
+                      </form>
+                    </div>
+                </div>
               </div>
               {/* card body */}
               <div className="card-body p-0">
@@ -69,7 +87,12 @@ const Orders = () => {
                     </thead>
                     <tbody>
                       {allOrders
-                        ?.slice(startIndex, endIndex)
+                        ?.filter((order) =>
+                        Object.values(order)
+                          .join(' ')
+                          .toLowerCase()
+                          .includes(searchQuery)
+                      ).slice(startIndex, endIndex)
                         .map((order, index) => {
                           return (
                             <tr key={index}>

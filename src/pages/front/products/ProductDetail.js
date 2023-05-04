@@ -46,7 +46,7 @@ const ProductDetail = (props) => {
 
   useEffect(() => {
     getProduct(); // call the async function
-  }, [id]);
+  }, [id,product]);
 
   useEffect(() => {
     if (product && product.stars) {
