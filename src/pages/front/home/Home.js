@@ -51,7 +51,6 @@ function Home() {
 
   var total = 0;
 
-
   useEffect(() => {
     dispatch(refreshUser(currentUser?.id));
     const searchObject = { name: searchQueryByProductname };
@@ -79,22 +78,71 @@ function Home() {
     console.log(total);
   }, [searchQueryByProductname]);
 
+  useEffect(() => {
+    axios
+      .get("http://localhost:5000/products/expirationDate")
+      .then((res) => {
+        setExpirationProduct(res.data);
+        //console.log(expirationProduct);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  });
+  const [
+    allRecommendedProductsFromViewedList,
+    setAllRecommendedProductsFromViewedList,
+  ] = useState([]);
+  const [productsOfCategory, setProductsOfCategory] = useState();
 
   useEffect(() => {
     axios
-        .get("http://localhost:5000/products/expirationDate")
-        .then((res) => {
-          setExpirationProduct(res.data);
-          //console.log(expirationProduct);
-        })
-        .catch((error) => {
-          console.log(error);
+      .get(
+        `http://localhost:5000/api/getAllRecommendedProductsFromViewedList/${currentUser?.email}`
+      )
+      .then((res) => {
+        console.log(res.data.length);
+        setAllRecommendedProductsFromViewedList(res.data);
+        let arr = [];
+        if (res.data.length >= 1)
+          arr.push(getRandomProduct(res.data[0].categoryId));
+
+        if (res.data.length >= 2)
+          arr.push(getRandomProduct(res.data[1].categoryId));
+        if (res.data.length >= 3)
+          arr.push(getRandomProduct(res.data[2].categoryId));
+        console.log("aaaaaaaaaaaaaaaaa");
+        console.log(arr);
+        let arr2 = [];
+        Promise.all(arr).then((res) => {
+          console.log("res", res);
+          setProductsOfCategory(res);
         });
-    
-  });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
 
+  const getRandomProduct = async (idCategory) => {
+    console.log("bbbb");
+    try {
+      console.log("hjiii");
+      const response = await axios.get(
+        `/products/prod/productsByCategory/${idCategory}`
+      );
 
-
+      const randomIndex = Math.floor(Math.random() * response.data.length);
+      console.log("randomIndex" + randomIndex);
+      let arr = productsOfCategory;
+      return response.data[randomIndex];
+      // arr.push(response.data[randomIndex]);
+      // setProductsOfCategory(arr);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  console.log(productsOfCategory);
   useEffect(() => {
     axios
       .get(
@@ -393,14 +441,14 @@ function Home() {
       "fifth-comment": "Shop Now",
     },
   ];
-  let categories=[]
+  let categories = [];
   expirationProduct.map((e) => {
     categories.push({
       name: e.name,
       src: e.image,
-    })
+    });
   });
-   /* const categories = [
+  /* const categories = [
 
    
     {
@@ -457,7 +505,6 @@ function Home() {
     },
     
   ];*/
-
 
   //Slider settings for the intro
   const settings_intro = {
@@ -664,10 +711,8 @@ function Home() {
                 {error}
               </div>
             )}
-            <div className="d-flex justify-content-end mt-4">
-              
-              
-              <button className="btn btn-primary" onClick={confirmOrder}>
+            <div className='d-flex justify-content-end mt-4'>
+              <button className='btn btn-primary' onClick={confirmOrder}>
                 Confirm Order
               </button>
             </div>
@@ -911,12 +956,11 @@ function Home() {
                       <div className='card-body text-center  py-8'>
                         <img
                           src={`http://localhost:5002/productUploads/${category.src}`}
-                          alt="Grocery Ecommerce Template"
-                          className="mb-3 img-prod-exp"
+                          alt='Grocery Ecommerce Template'
+                          className='mb-3 img-prod-exp'
                         />
                         <div className='text-truncate'>{category.name}</div>
                       </div>
-                      
                     </div>
                   </a>
                 ))}
@@ -988,10 +1032,12 @@ function Home() {
             </div>
             <div className='row g-4 row-cols-lg-5 row-cols-2 row-cols-md-3'>
               {allProducts?.map((product, index) => {
-                const expirationDate = new Date(product.expirationDate).getTime(); // get expiration date in milliseconds
+                const expirationDate = new Date(
+                  product.expirationDate
+                ).getTime(); // get expiration date in milliseconds
                 const now = new Date().getTime(); // get current time in milliseconds
                 const distance = expirationDate - now; // calculate the time remaining in milliseconds
-              
+
                 // calculate days, hours, minutes, and seconds remaining
                 let days = Math.floor(distance / (1000 * 60 * 60 * 24));
                 let hours = Math.floor(
@@ -1024,7 +1070,6 @@ function Home() {
                   document.querySelector(
                     `#countdown-${index} .minutes`
                   ).textContent = minutes;
-
                 }, 1000);
                 return (
                   <div className='col' key={index}>
@@ -1047,17 +1092,15 @@ function Home() {
                               src={`http://localhost:5002/productUploads/${product.image}`}
                               alt='Grocery Ecommerce Template'
                               className='mb-3 img-fluid img-prod'
-
                             />
                           </a>
                           {/* action */}
                           <div className='card-product-action'>
                             <a
-              href='#!'
+                              href='#!'
                               className='btn-action'
                               data-bs-toggle='modal'
                               data-bs-target='#quickViewModal'
-
                             >
                               <i
                                 className='bi bi-eye'
@@ -1117,7 +1160,9 @@ function Home() {
                             <i className='bi bi-star-fill'></i>
                             <i className='bi bi-star-half'></i>
                           </small>{" "}
-                          <span className="text-muted small">{product.stars}({product.nbReviewers})</span>
+                          <span className='text-muted small'>
+                            {product.stars}({product.nbReviewers})
+                          </span>
                         </div>
 
                         <div className='d-flex justify-content-between align-items-center mt-3'>
@@ -1133,9 +1178,14 @@ function Home() {
                           {/* Add to shop */}
                           <div>
                             <button
-                              className="btn btn-primary btn-sm" 
+                              className='btn btn-primary btn-sm'
                               onClick={() => addProdcutToCart(product)}
-                              disabled={((distance % (1000 * 60 * 60)) / (1000 * 60)) < 0 || product?.inStock == "Out of Stock" ? true : false}
+                              disabled={
+                                (distance % (1000 * 60 * 60)) / (1000 * 60) <
+                                  0 || product?.inStock == "Out of Stock"
+                                  ? true
+                                  : false
+                              }
                             >
                               <svg
                                 xmlns='http://www.w3.org/2000/svg'
@@ -1194,7 +1244,7 @@ function Home() {
           <div className='container'>
             <div className='row'>
               <div className='col-md-12 mb-6'>
-                <h3 className='mb-0'>Daily Best Sells</h3>
+                <h3 className='mb-0'>Recommended products</h3>
               </div>
             </div>
             <div className='table-responsive-xl pb-6'>
@@ -1203,8 +1253,7 @@ function Home() {
                   <div
                     className=' pt-8 px-6 px-xl-8 rounded'
                     style={{
-                      background:
-                        "url(assets/images/auth/food9.jpg)no-repeat",
+                      background: "url(assets/images/auth/food9.jpg)no-repeat",
                       backgroundSize: "cover",
                       height: "470px",
                     }}
@@ -1223,343 +1272,128 @@ function Home() {
                     </div>
                   </div>
                 </div>
-                <div className='col'>
-                  <div className='card card-product'>
-                    <div className='card-body'>
-                      <div className='text-center  position-relative '>
-                        {" "}
-                        <a href='pages/shop-single.html'>
-                          <img
-                            src='assets/images/products/product-img-11.jpg'
-                            alt='Grocery Ecommerce Template'
-                            className='mb-3 img-fluid'
-                          />
-                        </a>
-                        <div className='card-product-action'>
-                          <a
-                            href='#!'
-                            className='btn-action'
-                            data-bs-toggle='modal'
-                            data-bs-target='#quickViewModal'
-                          >
-                            <i
-                              className='bi bi-eye'
-                              data-bs-toggle='tooltip'
-                              data-bs-html='true'
-                              title='Quick View'
-                            ></i>
-                          </a>
-                          <a
-                            href='#!'
-                            className='btn-action'
-                            data-bs-toggle='tooltip'
-                            data-bs-html='true'
-                            title='Wishlist'
-                          >
-                            <i className='bi bi-heart'></i>
-                          </a>
-                          <a
-                            href='#!'
-                            className='btn-action'
-                            data-bs-toggle='tooltip'
-                            data-bs-html='true'
-                            title='Compare'
-                          >
-                            <i className='bi bi-arrow-left-right'></i>
-                          </a>
-                        </div>
-                      </div>
-                      <div className='text-small mb-1'>
-                        <a
-                          href='#!'
-                          className='text-decoration-none text-muted'
-                        >
-                          <small>Tea, Coffee & Drinks</small>
-                        </a>
-                      </div>
-                      <h2 className='fs-6'>
-                        <a
-                          href='pages/shop-single.html'
-                          className='text-inherit text-decoration-none'
-                        >
-                          Roast Ground Coffee
-                        </a>
-                      </h2>
 
-                      <div className='d-flex justify-content-between align-items-center mt-3'>
-                        <div>
-                          <span className='text-dark'>$13</span>{" "}
-                          <span className='text-decoration-line-through text-muted'>
-                            $18
-                          </span>
-                        </div>
-                        <div>
-                          <small className='text-warning'>
+                {productsOfCategory?.map((product) => {
+                  return (
+                    <div className='col'>
+                      <div className='card card-product'>
+                        <div className='card-body'>
+                          <div className='text-center  position-relative '>
                             {" "}
-                            <i className='bi bi-star-fill'></i>
-                            <i className='bi bi-star-fill'></i>
-                            <i className='bi bi-star-fill'></i>
-                            <i className='bi bi-star-fill'></i>
-                            <i className='bi bi-star-half'></i>
-                          </small>
-                          <span>
-                            <small>4.5</small>
-                          </span>
+                            <a href='#'>
+                              <img
+                                src={`http://localhost:5002/productUploads/${product.image}`}
+                                alt='Grocery Ecommerce Template'
+                                className='mb-3 img-fluid img-prod'
+                              />
+                            </a>
+                            <div className='card-product-action'>
+                              <a
+                                href='#!'
+                                className='btn-action'
+                                data-bs-toggle='modal'
+                                data-bs-target='#quickViewModal'
+                              >
+                                <i
+                                  className='bi bi-eye'
+                                  data-bs-toggle='tooltip'
+                                  data-bs-html='true'
+                                  title='Quick View'
+                                ></i>
+                              </a>
+                              <a
+                                href='#!'
+                                className='btn-action'
+                                data-bs-toggle='tooltip'
+                                data-bs-html='true'
+                                title='Wishlist'
+                              >
+                                <i className='bi bi-heart'></i>
+                              </a>
+                              <a
+                                href='#!'
+                                className='btn-action'
+                                data-bs-toggle='tooltip'
+                                data-bs-html='true'
+                                title='Compare'
+                              >
+                                <i className='bi bi-arrow-left-right'></i>
+                              </a>
+                            </div>
+                          </div>
+
+                          <h2 className='fs-6'>
+                            <Link to={`/productDetail?id=${product._id}`}>
+                              <a
+                                href='pages/shop-single.html'
+                                className='text-inherit text-decoration-none'
+                              >
+                                {product.name}
+                              </a>
+                            </Link>
+                          </h2>
+                          <div className='d-flex justify-content-between align-items-center mt-3'>
+                            <div>
+                              <span className='text-dark'>
+                                {product.reduction} DT
+                              </span>{" "}
+                              <span className='text-decoration-line-through text-muted'>
+                                {product.price} DT
+                              </span>
+                            </div>
+                            <div>
+                              <small className='text-warning'>
+                                {" "}
+                                <i className='bi bi-star-fill'></i>
+                                <i className='bi bi-star-fill'></i>
+                                <i className='bi bi-star-fill'></i>
+                                <i className='bi bi-star-fill'></i>
+                                <i className='bi bi-star-half'></i>
+                              </small>{" "}
+                              <span className='text-muted small'>
+                                {product.stars}({product.nbReviewers})
+                              </span>
+                            </div>
+                          </div>
+                          <div>
+                            <button
+                              className='btn btn-primary btn-sm'
+                              onClick={() => addProdcutToCart(product)}
+                              disabled={
+                                product?.inStock == "Out of Stock"
+                                  ? true
+                                  : false
+                              }
+                            >
+                              <svg
+                                xmlns='http://www.w3.org/2000/svg'
+                                width='16'
+                                height='16'
+                                viewBox='0 0 24 24'
+                                fill='none'
+                                stroke='currentColor'
+                                strokeWidth='2'
+                                strokeLinecap='round'
+                                strokeLinejoin='round'
+                                className='feather feather-plus'
+                              >
+                                <line x1='12' y1='5' x2='12' y2='19'></line>
+                                <line x1='5' y1='12' x2='19' y2='12'></line>
+                              </svg>{" "}
+                              Add
+                            </button>
+                          </div>
+                          <div className='d-flex justify-content-start text-center mt-3'>
+                            <div
+                              className='deals-countdown w-100'
+                              data-countdown='2028/11/11 00:00:00'
+                            ></div>
+                          </div>
                         </div>
-                      </div>
-                      <div className='d-grid mt-2'>
-                        <a href='#!' className='btn btn-primary '>
-                          <svg
-                            xmlns='http://www.w3.org/2000/svg'
-                            width='16'
-                            height='16'
-                            viewBox='0 0 24 24'
-                            fill='none'
-                            stroke='currentColor'
-                            strokeWidth='2'
-                            strokeLinecap='round'
-                            strokeLinejoin='round'
-                            className='feather feather-plus'
-                          >
-                            <line x1='12' y1='5' x2='12' y2='19'></line>
-                            <line x1='5' y1='12' x2='19' y2='12'></line>
-                          </svg>{" "}
-                          Add to cart{" "}
-                        </a>
-                      </div>
-                      <div className='d-flex justify-content-start text-center mt-3'>
-                        <div
-                          className='deals-countdown w-100'
-                          data-countdown='2028/10/10 00:00:00'
-                        ></div>
                       </div>
                     </div>
-                  </div>
-                </div>
-                <div className='col'>
-                  <div className='card card-product'>
-                    <div className='card-body'>
-                      <div className='text-center  position-relative '>
-                        {" "}
-                        <a href='pages/shop-single.html'>
-                          <img
-                            src='assets/images/products/product-img-12.jpg'
-                            alt='Grocery Ecommerce Template'
-                            className='mb-3 img-fluid'
-                          />
-                        </a>
-                        <div className='card-product-action'>
-                          <a
-                            href='#!'
-                            className='btn-action'
-                            data-bs-toggle='modal'
-                            data-bs-target='#quickViewModal'
-                          >
-                            <i
-                              className='bi bi-eye'
-                              data-bs-toggle='tooltip'
-                              data-bs-html='true'
-                              title='Quick View'
-                            ></i>
-                          </a>
-                          <a
-                            href='#!'
-                            className='btn-action'
-                            data-bs-toggle='tooltip'
-                            data-bs-html='true'
-                            title='Wishlist'
-                          >
-                            <i className='bi bi-heart'></i>
-                          </a>
-                          <a
-                            href='#!'
-                            className='btn-action'
-                            data-bs-toggle='tooltip'
-                            data-bs-html='true'
-                            title='Compare'
-                          >
-                            <i className='bi bi-arrow-left-right'></i>
-                          </a>
-                        </div>
-                      </div>
-                      <div className='text-small mb-1'>
-                        <a
-                          href='#!'
-                          className='text-decoration-none text-muted'
-                        >
-                          <small>Fruits & Vegetables</small>
-                        </a>
-                      </div>
-                      <h2 className='fs-6'>
-                        <a
-                          href='pages/shop-single.html'
-                          className='text-inherit text-decoration-none'
-                        >
-                          Crushed Tomatoes
-                        </a>
-                      </h2>
-                      <div className='d-flex justify-content-between align-items-center mt-3'>
-                        <div>
-                          <span className='text-dark'>$13</span>{" "}
-                          <span className='text-decoration-line-through text-muted'>
-                            $18
-                          </span>
-                        </div>
-                        <div>
-                          <small className='text-warning'>
-                            {" "}
-                            <i className='bi bi-star-fill'></i>
-                            <i className='bi bi-star-fill'></i>
-                            <i className='bi bi-star-fill'></i>
-                            <i className='bi bi-star-fill'></i>
-                            <i className='bi bi-star-half'></i>
-                          </small>
-                          <span>
-                            <small>4.5</small>
-                          </span>
-                        </div>
-                      </div>
-                      <div className='d-grid mt-2'>
-                        <a href='#!' className='btn btn-primary '>
-                          <svg
-                            xmlns='http://www.w3.org/2000/svg'
-                            width='16'
-                            height='16'
-                            viewBox='0 0 24 24'
-                            fill='none'
-                            stroke='currentColor'
-                            strokeWidth='2'
-                            strokeLinecap='round'
-                            strokeLinejoin='round'
-                            className='feather feather-plus'
-                          >
-                            <line x1='12' y1='5' x2='12' y2='19'></line>
-                            <line x1='5' y1='12' x2='19' y2='12'></line>
-                          </svg>{" "}
-                          Add to cart{" "}
-                        </a>
-                      </div>
-                      <div className='d-flex justify-content-start text-center mt-3 w-100'>
-                        <div
-                          className='deals-countdown w-100'
-                          data-countdown='2028/12/9 00:00:00'
-                        ></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className='col'>
-                  <div className='card card-product'>
-                    <div className='card-body'>
-                      <div className='text-center  position-relative '>
-                        {" "}
-                        <a href='pages/shop-single.html'>
-                          <img
-                            src='assets/images/products/product-img-13.jpg'
-                            alt='Grocery Ecommerce Template'
-                            className='mb-3 img-fluid'
-                          />
-                        </a>
-                        <div className='card-product-action'>
-                          <a
-                            href='#!'
-                            className='btn-action'
-                            data-bs-toggle='modal'
-                            data-bs-target='#quickViewModal'
-                          >
-                            <i
-                              className='bi bi-eye'
-                              data-bs-toggle='tooltip'
-                              data-bs-html='true'
-                              title='Quick View'
-                            ></i>
-                          </a>
-                          <a
-                            href='#!'
-                            className='btn-action'
-                            data-bs-toggle='tooltip'
-                            data-bs-html='true'
-                            title='Wishlist'
-                          >
-                            <i className='bi bi-heart'></i>
-                          </a>
-                          <a
-                            href='#!'
-                            className='btn-action'
-                            data-bs-toggle='tooltip'
-                            data-bs-html='true'
-                            title='Compare'
-                          >
-                            <i className='bi bi-arrow-left-right'></i>
-                          </a>
-                        </div>
-                      </div>
-                      <div className='text-small mb-1'>
-                        <a
-                          href='#!'
-                          className='text-decoration-none text-muted'
-                        >
-                          <small>Fruits & Vegetables</small>
-                        </a>
-                      </div>
-                      <h2 className='fs-6'>
-                        <a
-                          href='pages/shop-single.html'
-                          className='text-inherit text-decoration-none'
-                        >
-                          Golden Pineapple
-                        </a>
-                      </h2>
-                      <div className='d-flex justify-content-between align-items-center mt-3'>
-                        <div>
-                          <span className='text-dark'>$13</span>{" "}
-                          <span className='text-decoration-line-through text-muted'>
-                            $18
-                          </span>
-                        </div>
-                        <div>
-                          <small className='text-warning'>
-                            {" "}
-                            <i className='bi bi-star-fill'></i>
-                            <i className='bi bi-star-fill'></i>
-                            <i className='bi bi-star-fill'></i>
-                            <i className='bi bi-star-fill'></i>
-                            <i className='bi bi-star-half'></i>
-                          </small>
-                          <span>
-                            <small>4.5</small>
-                          </span>
-                        </div>
-                      </div>
-                      <div className='d-grid mt-2'>
-                        <a href='#!' className='btn btn-primary '>
-                          <svg
-                            xmlns='http://www.w3.org/2000/svg'
-                            width='16'
-                            height='16'
-                            viewBox='0 0 24 24'
-                            fill='none'
-                            stroke='currentColor'
-                            strokeWidth='2'
-                            strokeLinecap='round'
-                            strokeLinejoin='round'
-                            className='feather feather-plus'
-                          >
-                            <line x1='12' y1='5' x2='12' y2='19'></line>
-                            <line x1='5' y1='12' x2='19' y2='12'></line>
-                          </svg>{" "}
-                          Add to cart{" "}
-                        </a>
-                      </div>
-                      <div className='d-flex justify-content-start text-center mt-3'>
-                        <div
-                          className='deals-countdown w-100'
-                          data-countdown='2028/11/11 00:00:00'
-                        ></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                  );
+                })}
               </div>
             </div>
           </div>

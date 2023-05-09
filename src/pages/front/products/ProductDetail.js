@@ -38,8 +38,17 @@ const ProductDetail = (props) => {
       const response = await axios.get(
         `http://localhost:5000/products/prod/${id}`
       );
+      console.log(response);
+      const response2 = await axios.put(
+        `http://localhost:5000/api/addProdcutToViewedHistorylist`,
+        {
+          email: currentUser?.email,
+          productsId: id,
+          categoryId: response.data.category._id,
+        }
+      );
+
       setProduct(response.data);
-      console.log(response.data);
     } catch (error) {
       console.log(error);
     }
@@ -47,21 +56,29 @@ const ProductDetail = (props) => {
 
   // const addProdcutToViewedHistorylist = async () => {
   //   //todo
+  //   console.log("hiiiii");
+  //   console.log(product);
   //   try {
   //     const response = await axios.put(
-  //       `http://localhost:5000/addProdcutToViewedHistorylist`,
-  //       { email: currentUser?.email, productsId: id, categoryId: categoryId }
+  //       `http://localhost:5000/api/addProdcutToViewedHistorylist`,
+  //       {
+  //         email: currentUser?.email,
+  //         productsId: id,
+  //         categoryId: product.category._id,
+  //       }
   //     );
-  //     setProduct(response.data);
   //   } catch (error) {
   //     console.log(error);
   //   }
   // };
-
   useEffect(() => {
     getProduct(); // call the async function
-  }, [id,product]);
+    //addProdcutToViewedHistorylist();
+  }, [id]);
 
+  // useEffect(() => {
+  //   if (product) addProdcutToViewedHistorylist();
+  // }, [product]);
 
   useEffect(() => {
     if (product && product.stars) {
