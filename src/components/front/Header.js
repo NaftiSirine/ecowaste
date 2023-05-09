@@ -414,38 +414,7 @@ function Navbar() {
 
             <div className='d-none d-lg-block'>
               <ul className='navbar-nav align-items-center '>
-                <Link to='/home'>
-                  <li className='nav-item dropdown'>
-                    <a
-                      className='nav-link'
-                      role='button'
-                      data-bs-toggle='dropdown'
-                      aria-expanded='false'
-                    >
-                      Home
-                    </a>
-                  </li>
-                </Link>
-                <li className='nav-item dropdown'>
-                  <a
-                    className='nav-link '
-                    role='button'
-                    data-bs-toggle='dropdown'
-                    aria-expanded='false'
-                  >
-                    Shop
-                  </a>
-                </li>
-                <li className='nav-item dropdown'>
-                  <a
-                    className='nav-link '
-                    role='button'
-                    data-bs-toggle='dropdown'
-                    aria-expanded='false'
-                  >
-                    Stores
-                  </a>
-                </li>
+                
                 <li className='nav-item dropdown dropdown-fullwidth'>
                   <a
                     className='nav-link dropdown-toggle'
@@ -523,16 +492,6 @@ function Navbar() {
                       </div>
                     </div>
                   </div>
-                </li>
-                <li className='nav-item dropdown'>
-                  <a
-                    className='nav-link '
-                    role='button'
-                    data-bs-toggle='dropdown'
-                    aria-expanded='false'
-                  >
-                    Pages
-                  </a>
                 </li>
                 <li className='nav-item dropdown'>
                   <a

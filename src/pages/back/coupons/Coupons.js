@@ -283,12 +283,12 @@ const Coupons = (props) => {
                                 {allCoupons.length} products
                               </div>
                               <div>
-                                <div className="d-flex justify-content-between align-items-center">
+                                <div style={{margin: "0px -147px 0px 0px"}} className="d-flex justify-content-between align-items-center">
                                   <label htmlFor="items-per-page">
                                     Items per page:
                                   </label>
 
-                                  <input
+                                  <input style={{width: "40px"}}
                                     type="number"
                                     className="form-control"
                                     id="items-per-page"

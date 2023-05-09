@@ -983,7 +983,7 @@ function Home() {
                 );
 
                 // update the countdown every second
-                setInterval(() => {
+                /*setInterval(() => {
                   const now = new Date().getTime();
                   const distance = expirationDate - now;
 
@@ -995,17 +995,22 @@ function Home() {
                     (distance % (1000 * 60 * 60)) / (1000 * 60)
                   );
 
+                  
+
                   // update the countdown timer display
-                  document.querySelector(
-                    `#countdown-${index} .days`
-                  ).textContent = days;
-                  document.querySelector(
-                    `#countdown-${index} .hours`
-                  ).textContent = hours;
-                  document.querySelector(
-                    `#countdown-${index} .minutes`
-                  ).textContent = minutes;
-                }, 1000);
+                  const countdownElement = document.getElementById(`countdown-${index}`);
+                  if (countdownElement !== null) {
+                    const daysElement = countdownElement.getElementsByClassName('days')[0];
+                    const hoursElement = countdownElement.getElementsByClassName('hours')[0];
+                    const minutesElement = countdownElement.getElementsByClassName('minutes')[0];
+
+                    if (daysElement && hoursElement && minutesElement) {
+                      daysElement.innerHTML = days;
+                      hoursElement.innerHTML = hours;
+                      minutesElement.innerHTML = minutes;
+                    }
+                  }
+                }, 1000);*/
                 return (
                   <div className='col' key={index}>
                     <div className='card card-product'>

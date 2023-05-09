@@ -47,7 +47,17 @@ export default function CheckoutForm() {
   return (
     <form id="payment-form" onSubmit={handleSubmit}>
       <PaymentElement id="payment-element" />
-      <button disabled={isProcessing || !stripe || !elements} id="submit">
+      <button style={{background: "#4cc424",
+        borderRadius: "var(--radius)",
+        color: "white",
+        border: "0",
+        padding: "12px 16px",
+        marginTop: "16px",
+        fontWeight: "600",
+        cursor: "pointer",
+        transition: "all 0.2s ease",
+        display: "block",
+        }} disabled={isProcessing || !stripe || !elements} id="submit">
         <span id="button-text">
           {isProcessing ? "Processing ... " : "Pay now"}
         </span>
