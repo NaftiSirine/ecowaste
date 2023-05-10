@@ -50,7 +50,7 @@ const OrdersList = () => {
           <thead className="bg-light">
             <tr>
               <th>&nbsp;</th>
-              <th>ID</th>
+              
               <th>Order</th>
               <th>Date</th>
 

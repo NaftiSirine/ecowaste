@@ -79,7 +79,7 @@ const OrderDetailBack = () => {
       .catch(function (error) {
         console.log(error);
       });
-  }, []);
+  }, [order]);
   return (
     
     <main className="main-content-wrapper">

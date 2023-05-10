@@ -76,7 +76,7 @@ const OrderDetail = () => {
       .catch(function (error) {
         console.log(error);
       });
-  }, []);
+  }, [order]);
   return (
     <main className="pt-5">
       <ToastContainer />
